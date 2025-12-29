@@ -1,5 +1,3 @@
----
-
 ## 🧩 Descripción técnica
 
 ### 🛍️ Carrito de compras
@@ -21,8 +19,6 @@
 - `removeItem` → elimina un producto del carrito  
 - `updateQuantity` → actualiza la cantidad de un producto  
 - `total` → valor total del pedido  
-
----
 
 #### useCart()
 
@@ -97,3 +93,25 @@ Con pnpm:
 
 ```bash
 pnpm install
+
+```
+O con npm
+
+```bash
+npm install
+
+```
+### Correr la aplicación
+
+Con npm:
+
+```bash
+pnpm run dev
+
+```
+O con npm
+
+```bash
+npm run dev
+
+```
