@@ -20,6 +20,8 @@
 - `updateQuantity` → actualiza la cantidad de un producto  
 - `total` → valor total del pedido  
 
+---
+
 #### useCart()
 
 `useCart()` es un **hook personalizado** que permite acceder fácilmente al estado y a las acciones del carrito desde cualquier componente de la aplicación, como:
@@ -93,8 +95,8 @@ Con pnpm:
 
 ```bash
 pnpm install
-
 ```
+
 O con npm
 
 ```bash
@@ -115,3 +117,4 @@ O con npm
 npm run dev
 
 ```
+
