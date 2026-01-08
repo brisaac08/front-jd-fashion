@@ -1,12 +1,28 @@
 export const categories = {
-  principales: ["Damas", "Caballeros", "Sol"],
+  principales: {
+    key: "principal",
+    title: "Explorar",
+    items: [
+      "Damas",
+      "Caballeros",
+      "Sol",
+    ],
+  },
 
   grupos: [
     {
+      key: "estilo",
       title: "Estilo",
-      items: ["Deportivas", "Casual", "Clásicas", "Elegantes", "Modernas / Urbanas"],
+      items: [
+        "Deportivas",
+        "Casual",
+        "Clásicas",
+        "Elegantes",
+        "Modernas / Urbanas",
+      ],
     },
     {
+      key: "marca",
       title: "Marca",
       items: [
         "Carrera",
@@ -20,16 +36,37 @@ export const categories = {
       ],
     },
     {
+      key: "material",
       title: "Material",
-      items: ["Acetato", "Metal", "Titanio", "TR90", "Plástico", "Mixto"],
+      items: [
+        "Acetato",
+        "Metal",
+        "Titanio",
+        "TR90",
+        "Plástico",
+        "Mixto",
+      ],
     },
     {
+      key: "tipo",
       title: "Tipo de montura",
-      items: ["Aro completo", "Tres piezas", "Semi al aire", "Al aire"],
+      items: [
+        "Aro completo",
+        "Tres piezas",
+        "Semi al aire",
+        "Al aire",
+      ],
     },
     {
+      key: "forma",
       title: "Forma",
-      items: ["Redondas", "Cuadradas", "Rectangulares", "Aviador", "Cat Eye"],
+      items: [
+        "Redondas",
+        "Cuadradas",
+        "Rectangulares",
+        "Aviador",
+        "Cat Eye",
+      ],
     },
   ],
 }
