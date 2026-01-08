@@ -21,11 +21,21 @@ export function Header() {
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2">
           <Glasses className="h-6 w-6 text-primary" />
-          <span className="text-xl font-semibold">Óptica JD Fashion</span>
+          <span className="text-xl font-semibold">
+            Óptica JD Fashion
+          </span>
         </Link>
 
         {/* MENÚ CENTRAL */}
         <div className="flex items-center gap-6">
+
+          {/* CATÁLOGO */}
+          <Link
+            href="/monturas"
+            className="font-medium hover:text-primary transition-colors"
+          >
+            Catálogo
+          </Link>
 
           {/* CATEGORÍAS */}
           <nav
@@ -44,14 +54,17 @@ export function Header() {
 
                   {/* PRINCIPALES */}
                   <div>
-                    <h4 className="mb-3 font-semibold">Explorar</h4>
+                    <h4 className="mb-3 font-semibold">
+                      Explorar
+                    </h4>
                     {categories.principales.map((item) => (
-                      <div
+                      <Link
                         key={item}
-                        className="cursor-pointer py-1 hover:text-primary"
+                        href="/monturas"
+                        className="block py-1 hover:text-primary"
                       >
                         {item}
-                      </div>
+                      </Link>
                     ))}
                   </div>
 
@@ -62,12 +75,13 @@ export function Header() {
                         {group.title}
                       </h4>
                       {group.items.map((item) => (
-                        <div
+                        <Link
                           key={item}
-                          className="cursor-pointer py-1 text-sm text-muted-foreground hover:text-primary"
+                          href="/monturas"
+                          className="block py-1 text-sm text-muted-foreground hover:text-primary"
                         >
                           {item}
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   ))}
@@ -87,7 +101,11 @@ export function Header() {
 
         {/* CARRITO */}
         <Link href="/carrito">
-          <Button variant="outline" size="icon" className="relative">
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative"
+          >
             <ShoppingCart className="h-5 w-5" />
             {itemCount > 0 && (
               <Badge className="absolute -right-2 -top-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
@@ -96,6 +114,7 @@ export function Header() {
             )}
           </Button>
         </Link>
+
       </div>
     </header>
   )
