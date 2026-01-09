@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation"
 import { ProductGrid } from "@/components/product-grid"
-import { CatalogSearch } from "@/components/catalog-search"
 import { Product } from "@/src/types/product"
 
 interface Props {
@@ -14,42 +13,32 @@ export default function MonturasClient({ products }: Props) {
 
   const tipo = searchParams.get("tipo")
   const valor = searchParams.get("valor")
-  const q = searchParams.get("q")
 
   let filtrados = [...products]
 
-  // 🔹 Filtro por marca
+  // 🔹 Filtro SOLO por marca
   if (tipo === "marca" && valor) {
     filtrados = filtrados.filter(
-      (p) =>
-        p.category === valor ||
-        p.name.toLowerCase().includes(valor.toLowerCase())
+      (p) => p.category?.toLowerCase() === valor.toLowerCase()
     )
   }
 
-  // 🔹 Búsqueda libre
-  if (q) {
-    const query = q.toLowerCase()
-    filtrados = filtrados.filter(
-      (p) =>
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query)
-    )
-  }
+  // 🔹 Título dinámico
+  const titulo =
+    tipo === "marca" && valor
+      ? valor
+      : "Catálogo de Monturas"
 
   return (
-    <div className="container py-8 space-y-6">
-      <h1 className="text-3xl font-bold">Catálogo de Monturas</h1>
-
-      <CatalogSearch />
-
-      {filtrados.length === 0 ? (
+    <div className="container py-10 space-y-8">
+      <header className="text-center space-y-2">
+        <h1 className="text-3xl font-bold">{titulo}</h1>
         <p className="text-muted-foreground">
-          No se encontraron monturas.
+          Selecciona tu montura favorita y completa tu pedido
         </p>
-      ) : (
-        <ProductGrid products={filtrados} />
-      )}
+      </header>
+
+      <ProductGrid products={filtrados} />
     </div>
   )
 }

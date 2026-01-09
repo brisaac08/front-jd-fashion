@@ -1,5 +1,5 @@
 import { Montura } from "@/src/types/montura"
-import { Product } from "@/components/product-grid"
+import { Product } from "@/src/types/product"
 
 export function monturaToProduct(m: Montura): Product {
   return {

@@ -1,45 +1,37 @@
-import { apiFetch } from "@/lib/api"
-import { Montura } from "@/src/types/montura"
+import { API_URL, API_KEY } from "@/lib/env"
+import { AdminProduct } from "@/src/types/admin-product"
 
-export function createMontura(
-  data: Partial<Montura>,
-  token: string
-) {
-  return apiFetch<Montura>(
-    "/admin/monturas/",
-    {
-      method: "POST",
-      body: JSON.stringify(data),
+export async function getAdminMonturas(): Promise<AdminProduct[]> {
+  const res = await fetch(`${API_URL}/monturas`, {
+    headers: {
+      "api-key": API_KEY,
     },
-    token
-  )
+    cache: "no-store",
+  })
+
+  if (!res.ok) {
+    throw new Error("Error al obtener monturas")
+  }
+
+  return res.json()
 }
 
-export function updateMontura(
+export async function updateAdminMontura(
   id: string,
-  data: Partial<Montura>,
-  token: string
+  data: Partial<AdminProduct>
 ) {
-  return apiFetch<Montura>(
-    `/admin/monturas/${id}`,
-    {
-      method: "PUT",
-      body: JSON.stringify(data),
+  const res = await fetch(`${API_URL}/admin/monturas/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": API_KEY,
     },
-    token
-  )
-}
+    body: JSON.stringify(data),
+  })
 
-export function deleteMontura(
-  id: string,
-  token: string
-) {
-  return apiFetch<void>(
-    `/admin/monturas/${id}`,
-    {
-      method: "DELETE",
-    },
-    token
-  )
-}
+  if (!res.ok) {
+    throw new Error("Error al actualizar montura")
+  }
 
+  return res.json()
+}

@@ -1,16 +1,8 @@
-import { apiFetch } from "@/lib/api"
+// src/services/auth.ts
+import { db } from "@/lib/db"
 
-interface LoginResponse {
-  access_token: string
-  token_type: string
-}
-
-export async function login(email: string, password: string) {
-  return apiFetch<LoginResponse>(
-    "/auth/login",
-    {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }
-  )
+export async function getAdminByEmail(email: string) {
+  return db.admin.findUnique({
+    where: { email },
+  })
 }

@@ -1,15 +1,7 @@
 "use client"
 
+import { Product } from "@/src/types/product"
 import { ProductCard } from "@/components/product-card"
-
-export interface Product {
-  id: string
-  name: string
-  description: string
-  price: number
-  image: string
-  category: string
-}
 
 interface ProductGridProps {
   products: Product[]
@@ -17,17 +9,8 @@ interface ProductGridProps {
 
 export function ProductGrid({ products }: ProductGridProps) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10">
       <div className="container px-4 md:px-6">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Nuestra Colección
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Selecciona tu montura favorita y completa tu pedido
-          </p>
-        </div>
-
         {products.length === 0 ? (
           <p className="text-center text-muted-foreground">
             No hay monturas disponibles
