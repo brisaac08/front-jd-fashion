@@ -21,7 +21,7 @@ interface ProductCardProps {
   product: Product
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product }: readonly ProductCardProps) {
   const { addItem } = useCart()
   const { toast } = useToast()
 
@@ -34,24 +34,25 @@ export function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <Card className="group overflow-hidden transition-all hover:shadow-lg">
+    <Card className="group flex flex-col overflow-hidden transition-all hover:shadow-lg h-full">
       <CardHeader className="p-0">
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="relative w-full aspect-square overflow-hidden bg-muted">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.name}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
           />
           <Badge className="absolute right-3 top-3 bg-accent text-accent-foreground">{product.category}</Badge>
         </div>
       </CardHeader>
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-lg tracking-tight text-balance">{product.name}</h3>
-        <p className="mt-1 text-sm text-muted-foreground text-pretty">{product.description}</p>
-        <p className="mt-3 text-2xl font-bold text-primary">${product.price.toFixed(2)}</p>
+      <CardContent className="p-3 sm:p-4 flex-1 flex flex-col gap-2">
+        <h3 className="font-semibold text-base leading-tight tracking-tight">{product.name}</h3>
+        <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+        <p className="text-xl sm:text-2xl font-bold text-primary mt-auto">${product.price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-3 sm:p-4 pt-0">
         <Button className="w-full gap-2" onClick={handleAddToCart}>
           <Plus className="h-4 w-4" />
           Añadir al Carrito

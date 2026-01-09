@@ -120,7 +120,94 @@
   * {
     @apply border-border outline-ring/50;
   }
+  
+  html {
+    @apply h-full;
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply h-full bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Evita scroll horizontal en móviles */
+    overflow-x: hidden;
+  }
+  
+  /* Contenedor principal para toda la app */
+  #__next {
+    @apply flex flex-col min-h-screen;
+  }
+  
+  /* Asegura que main ocupe espacio disponible */
+  main {
+    @apply flex-1 flex flex-col;
+  }
+  
+  /* Normaliza imágenes */
+  img {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Normaliza inputs */
+  input, textarea, select {
+    @apply w-full max-w-full;
+  }
+  
+  /* Asegura que los contenedores no se corten */
+  section, article, div {
+    @apply box-border;
   }
 }
+
+@layer components {
+  /* Contenedor base para todas las secciones */
+  .section-container {
+    @apply w-full px-4 sm:px-6 md:px-8 mx-auto;
+  }
+  
+  /* Contenedor fluido con max-width */
+  .container-fluid {
+    @apply w-full h-full;
+  }
+  
+  /* Grid responsive automático */
+  .grid-auto {
+    @apply grid gap-4 sm:gap-6 md:gap-8 auto-rows-max;
+  }
+  
+  /* Perspectiva 3D para flip cards */
+  .perspective {
+    perspective: 1000px;
+  }
+  
+  /* Animación flip suave */
+  @supports (transform-style: preserve-3d) {
+    .flip-card {
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    
+    .flip-card-front,
+    .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+  }
+  
+  /* Efecto hover en desktop */
+  @media (hover: hover) {
+    .philosophy-card-container {
+      @apply transition-transform duration-300 ease-out;
+    }
+    
+    .philosophy-card-container:hover {
+      @apply scale-105;
+    }
+  }
+}
+

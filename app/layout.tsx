@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  readonly children: React.ReactNode
 }) {
   return (
     <html lang="es">
@@ -29,8 +29,12 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <CartProvider>
-          <Header /> 
-          {children}
+          <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+            <Header /> 
+            <div className="flex-1 w-full">
+              {children}
+            </div>
+          </div>
           <Toaster />
         </CartProvider>
         <Analytics />

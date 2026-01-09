@@ -101,81 +101,84 @@ export function StoriesFeed() {
 
 
   return (
-    <section className="w-screen bg-gradient-to-b from-secondary/20 to-background py-8 overflow-hidden">
-     <div className="px-4 md:px-8">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold tracking-tight">
+    <section className="w-full bg-linear-to-b from-secondary/20 to-background py-8 sm:py-10 md:py-12 overflow-hidden">
+      <div className="px-4 sm:px-6 md:px-8 mx-auto w-full">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             Ofertas Especiales
           </h2>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-sm sm:text-base text-muted-foreground">
             Descuentos exclusivos en monturas seleccionadas
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative group">
           {/* Botón izquierda */}
           <Button
             variant="secondary"
             size="icon"
             onClick={scrollLeft}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+            className="absolute left-0 sm:left-1 top-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <ChevronLeft />
+            <ChevronLeft className="h-5 w-5" />
           </Button>
 
           {/* Carrusel */}
           <div
             ref={containerRef}
-            className="flex gap-4 overflow-hidden pb-4 scroll-smooth"
+            className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scroll-smooth [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {discountProducts.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-[85vw] sm:w-[400px]"
+                className="shrink-0 w-[calc(100vw-2rem)] sm:w-[calc(50vw-1rem)] md:w-[calc(33.333vw-1.25rem)] lg:w-96 snap-start"
               >
-                <div className="relative h-[600px] rounded-xl overflow-hidden bg-card border border-border shadow-lg">
+                <div className="relative aspect-3/4 sm:aspect-2/3 lg:aspect-auto lg:h-150 rounded-lg sm:rounded-xl overflow-hidden bg-card border border-border shadow-lg">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
                     className="object-cover"
+                    priority={false}
+                    sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
-                  <Badge className="absolute right-4 top-4 bg-destructive text-destructive-foreground text-lg px-3 py-1">
+                  <Badge className="absolute right-3 sm:right-4 top-3 sm:top-4 bg-destructive text-destructive-foreground text-sm sm:text-base px-2 sm:px-3 py-1">
                     -{product.discount}
                   </Badge>
 
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <Badge className="mb-3 bg-accent text-accent-foreground">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white space-y-2 sm:space-y-3">
+                    <Badge className="bg-accent text-accent-foreground text-xs sm:text-sm">
                       {product.category}
                     </Badge>
 
-                    <h3 className="text-2xl font-bold mb-2">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold line-clamp-2">
                       {product.name}
                     </h3>
 
-                    <p className="text-white/90 mb-4">
+                    <p className="text-xs sm:text-sm text-white/90 line-clamp-2">
                       {product.description}
                     </p>
 
-                    <div className="flex items-end gap-3 mb-4">
-                      <span className="text-3xl font-bold text-accent">
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-2xl sm:text-3xl font-bold text-accent">
                         ${product.price.toFixed(2)}
                       </span>
-                      <span className="text-lg text-white/60 line-through mb-1">
+                      <span className="text-sm sm:text-base text-white/60 line-through">
                         ${product.originalPrice.toFixed(2)}
                       </span>
                     </div>
 
                     <Button
-                      className="w-full gap-2"
-                      size="lg"
+                      className="w-full gap-2 mt-2 sm:mt-3"
+                      size="sm"
                       onClick={() => handleAddToCart(product)}
                     >
-                      <Plus className="h-5 w-5" />
-                      Añadir al Carrito
+                      <Plus className="h-4 w-4" />
+                      <span className="hidden sm:inline">Añadir al Carrito</span>
+                      <span className="sm:hidden">Añadir</span>
                     </Button>
                   </div>
                 </div>
@@ -188,9 +191,9 @@ export function StoriesFeed() {
             variant="secondary"
             size="icon"
             onClick={scrollRight}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+            className="absolute right-0 sm:right-1 top-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <ChevronRight />
+            <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
       </div>

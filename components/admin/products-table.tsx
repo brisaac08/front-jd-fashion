@@ -16,9 +16,9 @@ function EditMonturaModal({
   onClose,
   onUpdated,
 }: {
-  product: AdminProduct
-  onClose: () => void
-  onUpdated: () => void
+  readonly product: AdminProduct
+  readonly onClose: () => void
+  readonly onUpdated: () => void
 }) {
   const [nombre, setNombre] = useState(product.nombre)
   const [precio, setPrecio] = useState(product.precio ?? 0)
@@ -69,7 +69,7 @@ function EditMonturaModal({
 /* =======================
    TABLA
 ======================= */
-export function ProductsTable({ products }: { products: AdminProduct[] }) {
+export function ProductsTable({ products }: { readonly products: AdminProduct[] }) {
   const [search, setSearch] = useState("")
   const [editing, setEditing] = useState<AdminProduct | null>(null)
 
@@ -137,7 +137,7 @@ export function ProductsTable({ products }: { products: AdminProduct[] }) {
         <EditMonturaModal
           product={editing}
           onClose={() => setEditing(null)}
-          onUpdated={() => window.location.reload()}
+          onUpdated={() => globalThis.location.reload()}
         />
       )}
     </div>

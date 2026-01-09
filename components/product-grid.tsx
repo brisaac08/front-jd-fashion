@@ -7,16 +7,16 @@ interface ProductGridProps {
   products: Product[]
 }
 
-export function ProductGrid({ products }: ProductGridProps) {
+export function ProductGrid({ products }: readonly ProductGridProps) {
   return (
-    <section className="py-10">
-      <div className="container px-4 md:px-6">
+    <section className="w-full py-8 sm:py-10 md:py-12 bg-background">
+      <div className="px-4 sm:px-6 md:px-8 mx-auto w-full">
         {products.length === 0 ? (
-          <p className="text-center text-muted-foreground">
+          <p className="text-center text-muted-foreground py-12">
             No hay monturas disponibles
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-max">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

@@ -12,9 +12,9 @@ export default async function Home() {
     .map(monturaToProduct)
 
   return (
-    <div className="min-h-screen bg-background">
+    <main className="flex flex-col min-h-[calc(100vh-4rem)]">
       <StoriesFeed />
       <ProductGrid products={products} />
-    </div>
+    </main>
   )
 }
