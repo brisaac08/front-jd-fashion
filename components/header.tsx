@@ -13,7 +13,7 @@ export function Header() {
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 left-0 right-0 z-40 w-full border-b bg-white">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 md:px-8 mx-auto w-full max-w-full" style={{ height: '64px' }}>
 
         {/* LOGO */}
