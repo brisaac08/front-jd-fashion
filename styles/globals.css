@@ -116,9 +116,31 @@
 }
 
 @layer base {
+  /* Box sizing and media-friendly defaults */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: clamp(14px, 1.6vw, 18px);
+  }
+
+  img, picture, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
