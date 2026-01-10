@@ -6,6 +6,10 @@ import { AdminProduct } from "@/src/types/admin-product"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import ImageUploadInput from "@/components/admin/image-upload-input"
+import { uploadAdminMonturaImage, updateAdminMontura } from "@/src/services/admin-monturas"
+import { useToast } from "@/hooks/use-toast"
 import { Edit, Trash2 } from "lucide-react"
 
 /* =======================
@@ -27,25 +31,32 @@ function EditMonturaModal({
   const [imagen_url, setImagenUrl] = useState(product.imagen_url ?? "")
   const [stock, setStock] = useState(product.stock ?? 0)
   const [activo, setActivo] = useState(product.activo)
+  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const { toast } = useToast()
 
   async function handleSave() {
-    await fetch(`/api/admin/monturas/${product.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    setSaving(true)
+    try {
+      await updateAdminMontura(product.id, {
         nombre,
         marca,
         precio,
         descripcion,
         imagen_url,
-        activo
-      }),
-    })
+        stock,
+        activo,
+      })
 
-    onUpdated()
-    onClose()
+      toast({ title: "Montura actualizada", description: "Los cambios se guardaron correctamente." })
+      onUpdated()
+      onClose()
+    } catch (err) {
+      console.error(err)
+      toast({ title: "Error", description: String(err) })
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -53,18 +64,58 @@ function EditMonturaModal({
       <div className="w-full max-w-md rounded-xl bg-background p-6 space-y-4">
         <h2 className="text-lg font-semibold">Editar montura</h2>
 
-        <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
-        <Input type="number" value={precio} onChange={(e) => setPrecio(+e.target.value)} />
-        <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
+        <div>
+          <Label>Nombre</Label>
+          <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        </div>
+
+        <div>
+          <Label>Precio</Label>
+          <Input type="number" value={precio} onChange={(e) => setPrecio(+e.target.value)} />
+        </div>
+
+        <div>
+          <Label>Stock</Label>
+          <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
+        </div>
+
+        <div>
+          <Label>Marca</Label>
+          <Input value={marca} onChange={(e) => setMarca(e.target.value)} />
+        </div>
+
+        <div>
+          <Label>Descripción</Label>
+          <Input value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+        </div>
 
         <div className="flex items-center gap-2">
           <Switch checked={activo} onCheckedChange={setActivo} />
           <span>Activo</span>
         </div>
 
+        <div>
+          <Label>Imagen</Label>
+          <ImageUploadInput
+            initialUrl={imagen_url || null}
+            uploadFn={async (file) => {
+              try {
+                setUploading(true)
+                const resp = await uploadAdminMonturaImage(product.id, file)
+                setImagenUrl(resp.imagen_url)
+                toast({ title: "Imagen subida", description: "Imagen subida correctamente." })
+                return resp.imagen_url
+              } finally {
+                setUploading(false)
+              }
+            }}
+            onUploaded={(url) => setImagenUrl(url)}
+          />
+        </div>
+
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>Cancelar</Button>
-          <Button onClick={handleSave}>Guardar</Button>
+          <Button variant="outline" onClick={onClose} disabled={saving || uploading}>Cancelar</Button>
+          <Button onClick={handleSave} disabled={saving || uploading}>{saving ? "Guardando..." : "Guardar"}</Button>
         </div>
       </div>
     </div>
