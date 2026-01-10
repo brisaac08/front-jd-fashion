@@ -21,21 +21,26 @@ function EditMonturaModal({
   readonly onUpdated: () => void
 }) {
   const [nombre, setNombre] = useState(product.nombre)
+  const [marca, setMarca] = useState(product.marca ?? "")
   const [precio, setPrecio] = useState(product.precio ?? 0)
+  const [descripcion, setDescripcion] = useState(product.descripcion ?? "")
+  const [imagen_url, setImagenUrl] = useState(product.imagen_url ?? "")
   const [stock, setStock] = useState(product.stock ?? 0)
   const [activo, setActivo] = useState(product.activo)
 
   async function handleSave() {
     await fetch(`/api/admin/monturas/${product.id}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         nombre,
+        marca,
         precio,
-        stock,
-        activo,
+        descripcion,
+        imagen_url,
+        activo
       }),
     })
 

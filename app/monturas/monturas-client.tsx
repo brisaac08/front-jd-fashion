@@ -8,7 +8,7 @@ interface Props {
   products: Product[]
 }
 
-export default function MonturasClient({ products }: readonly Props) {
+export default function MonturasClient({ products }: Props) {
   const searchParams = useSearchParams()
 
   const tipo = searchParams.get("tipo")

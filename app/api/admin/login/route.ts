@@ -22,15 +22,23 @@ export async function POST(req: Request) {
     )
   }
 
-  const data = await res.json()
+const data = await res.json()
+console.log("Respuesta de login:", data)
 
-  const response = NextResponse.json(data)
+// Ajusta aquí si el campo no es 'token'
+const token = data.token || data.access_token || data.jwt || "";
 
-  // Guarda token en cookie
-  response.cookies.set("admin-token", data, {
-    httpOnly: true,
-    path: "/",
-  })
+const response = NextResponse.json(data)
 
-  return response
+// Expiración de 1 hora
+const oneHour = 60 * 60;
+response.cookies.set("admin-token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  path: "/",
+  maxAge: oneHour,
+})
+
+return response
 }
