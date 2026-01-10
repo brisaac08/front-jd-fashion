@@ -7,7 +7,7 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    "api-key": API_KEY, // ✅ ahora sí
+    "api-key": API_KEY ?? "", // ✅ ahora sí
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   }

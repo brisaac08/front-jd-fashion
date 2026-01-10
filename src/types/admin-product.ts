@@ -8,3 +8,23 @@ export interface AdminProduct {
   imagen_url: string | null
   activo: boolean
 }
+
+export interface CreateProductData {
+  nombre: string
+  marca?: string
+  precio: number
+  stock: number
+  descripcion?: string
+  imagen_url?: string
+  activo?: boolean
+}
+
+export interface UpdateProductData {
+  nombre?: string
+  marca?: string
+  precio?: number
+  stock?: number
+  descripcion?: string
+  imagen_url?: string
+  activo?: boolean
+}
