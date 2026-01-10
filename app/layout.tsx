@@ -6,6 +6,10 @@ import { Analytics } from "@vercel/analytics/next"
 import { CartProvider } from "@/components/cart-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { WhatsappFloatingButton } from "@/components/whatsapp-floating"
+
+
 
 import "./globals.css"
 
@@ -38,6 +42,8 @@ export default function RootLayout({
           <Toaster />
         </CartProvider>
         <Analytics />
+        <Footer />
+        <WhatsappFloatingButton />
       </body>
     </html>
   )

@@ -1,0 +1,27 @@
+"use client"
+
+export function WhatsappFloatingButton() {
+  const phoneNumber = "573245704999"
+  const message = "Hola 👋, tengo una consulta sobre sus productos"
+  const encodedMessage = encodeURIComponent(message)
+
+  const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+
+  return (
+    <a
+      href={whatsappLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      className="
+        fixed bottom-5 right-5 z-50
+        flex h-14 w-14 items-center justify-center
+        rounded-full bg-green-500
+        shadow-lg transition-transform
+        hover:scale-110 hover:bg-green-600
+      "
+    >
+      <span className="text-2xl">💬</span>
+    </a>
+  )
+}

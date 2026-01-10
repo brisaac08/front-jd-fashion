@@ -4,9 +4,10 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Plus } from "lucide-react"
+import { Plus, MessageCircle } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { useToast } from "@/hooks/use-toast"
+import { getProductWhatsappLink } from "@/lib/whatsapp"
 
 interface Product {
   id: string
@@ -52,11 +53,24 @@ export function ProductCard({ product }: readonly ProductCardProps) {
         <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
         <p className="text-xl sm:text-2xl font-bold text-primary mt-auto">${product.price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-3 sm:p-4 pt-0">
+      <CardFooter className="p-3 sm:p-4 pt-0 flex flex-col gap-2">
         <Button className="w-full gap-2" onClick={handleAddToCart}>
           <Plus className="h-4 w-4" />
           Añadir al Carrito
         </Button>
+        <a
+          href={getProductWhatsappLink({
+            productName: product.name,
+            price: product.price,
+          })}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button variant="outline" className="w-full gap-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700">
+            <MessageCircle className="h-4 w-4" />
+            Consultar por WhatsApp
+          </Button>
+        </a>
       </CardFooter>
     </Card>
   )
