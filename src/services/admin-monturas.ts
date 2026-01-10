@@ -64,7 +64,6 @@ export async function updateAdminMontura(id: string, data: UpdateProductData, to
   if (!id) {
     throw new Error("ID de montura inválido")
   }
-  
 
   const res = await fetch(`${API_URL}/admin/monturas/${id}`, {
     method: "PUT",
@@ -77,8 +76,40 @@ export async function updateAdminMontura(id: string, data: UpdateProductData, to
   })
 
   if (!res.ok) {
-    const error = await res.json()
-    throw new Error(error.error || "Error al actualizar montura")
+    // intentar parsear JSON, si falla usar texto
+    try {
+      const error = await res.json()
+      throw new Error(error?.error || JSON.stringify(error) || "Error al actualizar montura")
+    } catch (e) {
+      const txt = await res.text()
+      throw new Error(txt || "Error al actualizar montura")
+    }
+  }
+
+  return res.json()
+}
+
+export async function uploadAdminMonturaImage(id: string, file: File, token?: string): Promise<{ imagen_url: string }> {
+  if (!id) throw new Error("ID inválido")
+  const fd = new FormData()
+  fd.append("image", file)
+
+  const res = await fetch(`/api/admin/monturas/${id}/upload`, {
+    method: "POST",
+    body: fd,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  })
+
+  if (!res.ok) {
+    try {
+      const err = await res.json()
+      throw new Error(err?.error || JSON.stringify(err) || "Error subiendo imagen")
+    } catch (e) {
+      const txt = await res.text()
+      throw new Error(txt || "Error subiendo imagen")
+    }
   }
 
   return res.json()
