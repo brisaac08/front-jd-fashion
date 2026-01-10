@@ -1,34 +1,66 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { ChevronDown } from "lucide-react"
 import { categories } from "@/lib/categories"
 
 export function CategoriesMenu() {
   const [open, setOpen] = useState(false)
+  const navRef = useRef<HTMLNativeElement>(null)
+
+  // Cerrar al presionar Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    
+    if (open) {
+      document.addEventListener("keydown", handleKeyDown)
+    }
+    
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [open])
+
+  // Cerrar al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    
+    if (open) {
+      document.addEventListener("click", handleClickOutside)
+    }
+    
+    return () => {
+      document.removeEventListener("click", handleClickOutside)
+    }
+  }, [open])
 
   return (
-    <nav className="relative group">
-      <button 
+    <nav className="relative group" ref={navRef}>
+      <button
         className="flex items-center gap-1 font-medium hover:text-primary transition-colors text-sm sm:text-base py-2"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((v) => !v)}
       >
         Categorías
-        <ChevronDown className="h-4 w-4 transition-transform duration-200" style={{transform: open ? 'rotate(180deg)' : 'rotate(0deg)'}} />
+        <ChevronDown className="h-4 w-4 transition-transform duration-200" style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }} />
       </button>
 
       {/* DROPDOWN - Posicionado respecto al nav, se coloca debajo del header */}
       {open && (
-        <div 
+        <div
           className="fixed left-0 right-0 top-16 z-50 border-t bg-background shadow-lg"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          style={{ 
-            top: '64px',
-            width: '100vw',
-            left: 0
+          style={{
+            top: "64px",
+            width: "100vw",
+            left: 0,
           }}
         >
           <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 mx-auto w-full">
@@ -44,6 +76,7 @@ export function CategoriesMenu() {
                   <Link
                     key={item}
                     href="/monturas"
+                    onClick={() => setOpen(false)}
                     className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {item}
@@ -62,6 +95,7 @@ export function CategoriesMenu() {
                     <Link
                       key={item}
                       href={`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`}
+                      onClick={() => setOpen(false)}
                       className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
                       {item}

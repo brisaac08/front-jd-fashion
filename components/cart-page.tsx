@@ -24,7 +24,7 @@ interface CustomerData {
 }
 
 export function CartPage() {
-  const { items, updateQuantity, removeItem, total } = useCart()
+  const { items, updateQuantity, removeItem, total, clearCart } = useCart()
   const { toast } = useToast()
   const [customerData, setCustomerData] = useState<CustomerData>({
     firstName: "",
@@ -103,6 +103,9 @@ export function CartPage() {
       title: "Pedido enviado",
       description: "Redirigiendo a WhatsApp...",
     })
+
+    // Limpiar el carrito después de enviar el pedido
+    clearCart()
   }
 
   if (items.length === 0) {

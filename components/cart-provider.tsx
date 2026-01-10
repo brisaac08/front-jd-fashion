@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 
 interface Product {
   id: string
@@ -18,13 +18,36 @@ interface CartContextType {
   addItem: (product: Product) => void
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
+  clearCart: () => void
   total: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
+const CART_STORAGE_KEY = "jd_fashion_cart"
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Cargar carrito desde localStorage al montar el componente
+  useEffect(() => {
+    try {
+      const storedCart = localStorage.getItem(CART_STORAGE_KEY)
+      if (storedCart) {
+        setItems(JSON.parse(storedCart))
+      }
+    } catch (error) {
+      console.error("Error al cargar carrito:", error)
+    }
+    setIsHydrated(true)
+  }, [])
+
+  // Guardar carrito en localStorage cuando cambia
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+    }
+  }, [items, isHydrated])
 
   const addItem = (product: Product) => {
     setItems((current) => {
@@ -48,10 +71,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((current) => current.map((item) => (item.id === id ? { ...item, quantity } : item)))
   }
 
+  const clearCart = () => {
+    setItems([])
+  }
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, total }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total }}>
       {children}
     </CartContext.Provider>
   )
