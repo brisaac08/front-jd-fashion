@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { ShoppingCart, Glasses } from "lucide-react"
 
@@ -17,9 +18,16 @@ export function Header() {
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 md:px-8 mx-auto w-full max-w-full" style={{ height: '64px' }}>
 
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2">
-          <Glasses className="h-6 w-6 text-primary" />
-          <span className="text-xl font-semibold">
+        <Link href="/" className="flex items-center gap-2 cursor-pointer">
+          <Image
+            src="/logo.png"
+            alt="Óptica JD Fashion"
+            width={40}
+            height={40}
+            className="h-10 w-auto"
+            priority
+          />
+          <span className="text-lg sm:text-xl font-semibold hidden sm:inline">
             Óptica JD Fashion
           </span>
         </Link>
