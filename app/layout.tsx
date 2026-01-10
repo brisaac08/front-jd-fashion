@@ -17,8 +17,16 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Óptica JD Fashion - Catálogo de Monturas",
-  description: "Descubre nuestra colección exclusiva de monturas para lentes",
+  title: "Óptica JD Fashion | Monturas con estilo",
+  description: "Descubre nuestra colección exclusiva de monturas y anteojos con estilo. Encuentra las mejores marcas de monturas para lentes en Óptica JD Fashion. Consulta con nuestro equipo de expertos.",
+  icons: {
+    icon: "/icon.png",
+  },
+  openGraph: {
+    title: "Óptica JD Fashion | Monturas con estilo",
+    description: "Descubre nuestra colección exclusiva de monturas y anteojos con estilo.",
+    type: "website",
+  },
 }
 
 export default function RootLayout({
