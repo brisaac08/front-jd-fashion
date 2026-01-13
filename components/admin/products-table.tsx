@@ -36,28 +36,60 @@ function EditMonturaModal({
   const { toast } = useToast()
 
   async function handleSave() {
+    if (precio <= 0) {
+      toast({
+        title: "Precio inválido",
+        description: "El precio debe ser mayor a 0",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!imagen_url) {
+      toast({
+        title: "Imagen requerida",
+        description: "Debes subir una imagen antes de guardar",
+        variant: "destructive",
+      })
+      return
+    }
+
     setSaving(true)
+
+    const payload = {
+      nombre,
+      marca,
+      precio,
+      descripcion,
+      imagen_url,
+      stock,
+      activo,
+    }
+
+    console.log("DATA ENVIADA AL BACKEND:", payload)
+
     try {
-      await updateAdminMontura(product.id, {
-        nombre,
-        marca,
-        precio,
-        descripcion,
-        imagen_url,
-        stock,
-        activo,
+      await updateAdminMontura(product.id, payload)
+
+      toast({
+        title: "Montura actualizada",
+        description: "Los cambios se guardaron correctamente.",
       })
 
-      toast({ title: "Montura actualizada", description: "Los cambios se guardaron correctamente." })
       onUpdated()
       onClose()
     } catch (err) {
       console.error(err)
-      toast({ title: "Error", description: String(err) })
+      toast({
+        title: "Error al actualizar",
+        description: String(err),
+        variant: "destructive",
+      })
     } finally {
       setSaving(false)
     }
   }
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
