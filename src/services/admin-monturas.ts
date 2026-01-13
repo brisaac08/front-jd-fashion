@@ -1,41 +1,25 @@
-import type { AdminProduct, CreateProductData, UpdateProductData } from "@/src/types/admin-product";
-import { API_URL, API_KEY, } from "@/lib/env";
-
+import type { AdminProduct, CreateProductData, UpdateProductData } from "@/src/types/admin-product"
+import { API_URL, API_KEY } from "@/lib/env"
 
 /* =======================
-   OBTENER TODAS LAS MONTURAS
+   OBTENER TODAS LAS MONTURAS (PÚBLICO)
 ======================= */
 export async function getAdminMonturas(): Promise<AdminProduct[]> {
-  const res = await fetch(`${API_URL}/monturas`, {
-    headers: { "api-key": API_KEY ?? "" },
+  const res = await fetch(`${API_URL}/monturas/`, {
+    headers: {
+      "api-key": API_KEY ?? "",
+    },
     cache: "no-store",
   })
 
   if (!res.ok) {
-    throw new Error("Error al obtener monturas")
+    const err = await res.text()
+    throw new Error(err || "Error al obtener monturas")
   }
 
   return res.json()
 }
 
-/* =======================
-   OBTENER UNA MONTURA POR ID
-======================= */
-export async function getAdminMonturaById(id: string): Promise<AdminProduct> {
-  if (!id) {
-    throw new Error("ID de montura inválido")
-  }
-
-  const res = await fetch(`${API_URL}/monturas/${id}`, {
-    cache: "no-store",
-  })
-
-  if (!res.ok) {
-    throw new Error("Error al obtener montura")
-  }
-
-  return res.json()
-}
 
 /* =======================
    CREAR NUEVA MONTURA
@@ -62,22 +46,22 @@ export async function createAdminMontura(data: CreateProductData): Promise<Admin
 ======================= */
 export async function updateAdminMontura(
   id: string,
-  data: UpdateProductData
+  data: UpdateProductData,
+  token?: string
 ): Promise<AdminProduct> {
-  if (!id) throw new Error("ID inválido")
-
-  const res = await fetch(`/api/admin/monturas/${id}`, {
+  const res = await fetch(`${API_URL}/admin/monturas/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "api-key": API_KEY ?? "",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(data),
-    credentials: "include", // 🔥 CLAVE
   })
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(err)
+    throw new Error(err || "Error al actualizar montura")
   }
 
   return res.json()
@@ -133,6 +117,23 @@ export async function deleteAdminMontura(id: string): Promise<{ message: string 
 /* =======================
    CAMBIAR ESTADO ACTIVO/INACTIVO
 ======================= */
-export async function toggleAdminMonturaStatus(id: string, activo: boolean): Promise<AdminProduct> {
-  return updateAdminMontura(id, { activo })
+export async function toggleAdminMonturaStatus(
+  id: string,
+  activo: boolean
+): Promise<AdminProduct> {
+  const res = await fetch(`/api/admin/monturas/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ activo }),
+    credentials: "include",
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(err)
+  }
+
+  return res.json()
 }
