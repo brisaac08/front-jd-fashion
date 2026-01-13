@@ -60,41 +60,36 @@ export async function createAdminMontura(data: CreateProductData): Promise<Admin
 /* =======================
    ACTUALIZAR MONTURA
 ======================= */
-export async function updateAdminMontura(id: string, data: UpdateProductData, token?: string): Promise<AdminProduct> {
-  if (!id) {
-    throw new Error("ID de montura inválido")
-  }
+export async function updateAdminMontura(
+  id: string,
+  data: UpdateProductData
+): Promise<AdminProduct> {
+  if (!id) throw new Error("ID inválido")
 
-  const res = await fetch(`${API_URL}/admin/monturas/${id}`, {
+  const res = await fetch(`/api/admin/monturas/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "api-key": API_KEY ?? "",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(data),
+    credentials: "include", // 🔥 CLAVE
   })
 
   if (!res.ok) {
-    // intentar parsear JSON, si falla usar texto
-    try {
-      const error = await res.json()
-      throw new Error(error?.error || JSON.stringify(error) || "Error al actualizar montura")
-    } catch (e) {
-      const txt = await res.text()
-      throw new Error(txt || "Error al actualizar montura")
-    }
+    const err = await res.text()
+    throw new Error(err)
   }
 
   return res.json()
 }
+
 
 export async function uploadAdminMonturaImage(id: string, file: File, token?: string): Promise<{ imagen_url: string }> {
   if (!id) throw new Error("ID inválido")
   const fd = new FormData()
   fd.append("image", file)
 
-  const res = await fetch(`/api/admin/monturas/${id}/upload`, {
+  const res = await fetch(`/api/admin/monturas/${id}/upload-post`, {
     method: "POST",
     body: fd,
     headers: {
