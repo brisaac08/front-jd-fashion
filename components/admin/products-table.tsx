@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import ImageUploadInput from "@/components/admin/image-upload-input"
 import { uploadAdminMonturaImage, updateAdminMontura } from "@/src/services/admin-monturas"
 import { useToast } from "@/hooks/use-toast"
+import { useAdminToken } from "@/hooks/use-admin-token"
 import { Edit, Trash2 } from "lucide-react"
 
 /* =======================
@@ -24,16 +25,27 @@ function EditMonturaModal({
   readonly onClose: () => void
   readonly onUpdated: () => void
 }) {
+  const { toast } = useToast()
+  const { token } = useAdminToken()
+
   const [nombre, setNombre] = useState(product.nombre)
   const [marca, setMarca] = useState(product.marca ?? "")
-  const [precio, setPrecio] = useState(product.precio ?? 0)
+  const [precio, setPrecio] = useState(product.precio)
+  const [stock, setStock] = useState(product.stock ?? 0)
   const [descripcion, setDescripcion] = useState(product.descripcion ?? "")
   const [imagen_url, setImagenUrl] = useState(product.imagen_url ?? "")
-  const [stock, setStock] = useState(product.stock ?? 0)
   const [activo, setActivo] = useState(product.activo)
+
+  // 🆕 NUEVOS CAMPOS
+  const [color, setColor] = useState(product.color ?? "")
+  const [material, setMaterial] = useState(product.material ?? "")
+  const [genero, setGenero] = useState(product.genero ?? "")
+  const [estilo, setEstilo] = useState(product.estilo ?? "")
+  const [tipo, setTipo] = useState(product.tipo ?? "")
+  const [forma, setForma] = useState(product.forma ?? "")
+
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const { toast } = useToast()
 
   async function handleSave() {
     if (precio <= 0) {
@@ -54,22 +66,36 @@ function EditMonturaModal({
       return
     }
 
-    setSaving(true)
+    if (!token) {
+      toast({
+        title: "Error de autenticación",
+        description: "No se encontró el token de autenticación",
+        variant: "destructive",
+      })
+      return
+    }
 
     const payload = {
       nombre,
       marca,
       precio,
+      stock,
       descripcion,
       imagen_url,
-      stock,
       activo,
+      color,
+      material,
+      genero,
+      estilo,
+      tipo,
+      forma,
     }
 
     console.log("DATA ENVIADA AL BACKEND:", payload)
 
+    setSaving(true)
     try {
-      await updateAdminMontura(product.id, payload)
+      await updateAdminMontura(product.id, payload, token)
 
       toast({
         title: "Montura actualizada",
@@ -90,30 +116,61 @@ function EditMonturaModal({
     }
   }
 
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-xl bg-background p-6 space-y-4">
+      <div className="w-full max-w-lg rounded-xl bg-background p-6 space-y-4 overflow-y-auto max-h-[90vh]">
         <h2 className="text-lg font-semibold">Editar montura</h2>
 
-        <div>
-          <Label>Nombre</Label>
-          <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <Label>Nombre</Label>
+            <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          </div>
 
-        <div>
-          <Label>Precio</Label>
-          <Input type="number" value={precio} onChange={(e) => setPrecio(+e.target.value)} />
-        </div>
+          <div>
+            <Label>Marca</Label>
+            <Input value={marca} onChange={(e) => setMarca(e.target.value)} />
+          </div>
 
-        <div>
-          <Label>Stock</Label>
-          <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
-        </div>
+          <div>
+            <Label>Precio</Label>
+            <Input type="number" value={precio} onChange={(e) => setPrecio(+e.target.value)} />
+          </div>
 
-        <div>
-          <Label>Marca</Label>
-          <Input value={marca} onChange={(e) => setMarca(e.target.value)} />
+          <div>
+            <Label>Stock</Label>
+            <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Color</Label>
+            <Input value={color} onChange={(e) => setColor(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Material</Label>
+            <Input value={material} onChange={(e) => setMaterial(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Género</Label>
+            <Input value={genero} onChange={(e) => setGenero(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Estilo</Label>
+            <Input value={estilo} onChange={(e) => setEstilo(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Tipo</Label>
+            <Input value={tipo} onChange={(e) => setTipo(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Forma</Label>
+            <Input value={forma} onChange={(e) => setForma(e.target.value)} />
+          </div>
         </div>
 
         <div>
@@ -135,19 +192,23 @@ function EditMonturaModal({
                 setUploading(true)
                 const resp = await uploadAdminMonturaImage(product.id, file)
                 setImagenUrl(resp.imagen_url)
-                toast({ title: "Imagen subida", description: "Imagen subida correctamente." })
+                toast({ title: "Imagen subida correctamente" })
                 return resp.imagen_url
               } finally {
                 setUploading(false)
               }
             }}
-            onUploaded={(url) => setImagenUrl(url)}
+            onUploaded={setImagenUrl}
           />
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose} disabled={saving || uploading}>Cancelar</Button>
-          <Button onClick={handleSave} disabled={saving || uploading}>{saving ? "Guardando..." : "Guardar"}</Button>
+          <Button variant="outline" onClick={onClose} disabled={saving || uploading}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSave} disabled={saving || uploading}>
+            {saving ? "Guardando..." : "Guardar"}
+          </Button>
         </div>
       </div>
     </div>
@@ -180,8 +241,15 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
         <thead className="bg-muted">
           <tr>
             <th className="p-4 text-left">Producto</th>
+            <th className="p-4 text-center">Marca</th>
             <th className="p-4 text-center">Precio</th>
             <th className="p-4 text-center">Stock</th>
+            <th className="p-4 text-center">Color</th>
+            <th className="p-4 text-center">Material</th>
+            <th className="p-4 text-center">Género</th>
+            <th className="p-4 text-center">Estilo</th>
+            <th className="p-4 text-center">Tipo</th>
+            <th className="p-4 text-center">Forma</th>
             <th className="p-4 text-center">Activo</th>
             <th className="p-4 text-center">Acciones</th>
           </tr>
@@ -190,21 +258,29 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
         <tbody>
           {filtered.map((p) => (
             <tr key={p.id} className="border-t">
-              <td className="p-4 flex items-center gap-4">
+              <td className="p-4 flex items-center gap-2 min-w-[250px]">
                 <Image
                   src={p.imagen_url || "/placeholder.svg"}
                   alt={p.nombre}
-                  width={48}
-                  height={48}
+                  width={40}
+                  height={40}
+                  className="rounded"
                 />
                 <div>
-                  <p>{p.nombre}</p>
-                  <p className="text-sm text-muted-foreground">{p.marca ?? "Sin marca"}</p>
+                  <p className="font-medium text-sm">{p.nombre}</p>
+                  <p className="text-xs text-muted-foreground">{p.descripcion?.substring(0, 30) || "Sin descripción"}</p>
                 </div>
               </td>
 
-              <td className="p-4 text-center">${p.precio}</td>
-              <td className="p-4 text-center">{p.stock ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.marca ?? "-"}</td>
+              <td className="p-4 text-center text-sm font-semibold">${p.precio}</td>
+              <td className="p-4 text-center text-sm">{p.stock ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.color ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.material ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.genero ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.estilo ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.tipo ?? "-"}</td>
+              <td className="p-4 text-center text-sm">{p.forma ?? "-"}</td>
               <td className="p-4 text-center">
                 <Switch checked={p.activo} disabled />
               </td>
