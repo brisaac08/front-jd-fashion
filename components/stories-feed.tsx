@@ -1,75 +1,36 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, useState } from "react"
 import Image from "next/image"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react"
-import { useCart } from "@/components/cart-provider"
-import { useToast } from "@/hooks/use-toast"
-import { formatPrice } from "@/lib/format-price"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const discountProducts = [
   {
-    id: "discount-1",
-    name: "Montura Aviador Premium",
-    description: "Clásica y atemporal",
-    price: 89.99,
-    originalPrice: 129.99,
-    discount: "30%",
-    image: "/aviator-sunglasses-gold.jpg",
-    category: "Aviador",
+    id: "promo-1",
+    name: "Principal",
+    image: "/Principal 16-9.png",
   },
   {
-    id: "discount-2",
-    name: "Montura Cat Eye Luxury",
-    description: "Elegancia vintage",
-    price: 79.99,
-    originalPrice: 119.99,
-    discount: "35%",
-    image: "/cat-eye-glasses-blue.jpg",
-    category: "Cat Eye",
+    id: "promo-2",
+    name: "Longchamp",
+    image: "/longchamp 16-9.png",
   },
   {
-    id: "discount-3",
-    name: "Montura Round Chic",
-    description: "Estilo intelectual",
-    price: 69.99,
-    originalPrice: 99.99,
-    discount: "30%",
-    image: "/round-glasses-gold.jpg",
-    category: "Redondas",
+    id: "promo-3",
+    name: "Michael Kors",
+    image: "/michael kors 16-9.png",
   },
   {
-    id: "discount-4",
-    name: "Montura Square Bold",
-    description: "Personalidad fuerte",
-    price: 74.99,
-    originalPrice: 109.99,
-    discount: "32%",
-    image: "/square-glasses-blue.jpg",
-    category: "Cuadradas",
+    id: "promo-4",
+    name: "Marca Exclusiva",
+    image: "/marca exclusica JDFASHION 16-6.png",
   },
 ]
 
 export function StoriesFeed() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { addItem } = useCart()
-  const { toast } = useToast()
-
-  const handleAddToCart = (product: (typeof discountProducts)[0]) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-    })
-
-    toast({
-      title: "Añadido al carrito",
-      description: `${product.name} se agregó a tu pedido`,
-    })
-  }
+  const [isAutoplay, setIsAutoplay] = useState(true)
 
   const scrollRight = () => {
   if (!containerRef.current) return
@@ -100,88 +61,66 @@ export function StoriesFeed() {
     }
   }
 
+  // Autoplay
+  useEffect(() => {
+    if (!isAutoplay) return
+
+    const interval = setInterval(() => {
+      scrollRight()
+    }, 8000) // Cada 8 segundos
+
+    return () => clearInterval(interval)
+  }, [isAutoplay])
+
+  const handleUserInteraction = () => {
+    setIsAutoplay(false)
+    // Reanudar autoplay después de 10 segundos sin interacción
+    const timeout = setTimeout(() => {
+      setIsAutoplay(true)
+    }, 10000)
+
+    return () => clearTimeout(timeout)
+  }
+
 
   return (
-    <section className="w-full bg-linear-to-b from-secondary/20 to-background py-8 sm:py-10 md:py-12 overflow-hidden">
+    <section className="w-full bg-linear-to-b from-secondary/20 to-background py-12 sm:py-16 md:py-20">
       <div className="px-4 sm:px-6 md:px-8 mx-auto w-full">
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-            Ofertas Especiales
-          </h2>
-          <p className="mt-2 text-sm sm:text-base text-muted-foreground">
-            Descuentos exclusivos en monturas seleccionadas
-          </p>
-        </div>
-
         <div className="relative group">
           {/* Botón izquierda */}
           <Button
             variant="secondary"
             size="icon"
-            onClick={scrollLeft}
-            className="absolute left-0 sm:left-1 top-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => {
+              scrollLeft()
+              handleUserInteraction()
+            }}
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-6 w-6" />
           </Button>
 
-          {/* Carrusel */}
+          {/* Carrusel horizontal */}
           <div
             ref={containerRef}
-            className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scroll-smooth [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="flex gap-6 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar-track]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-16"
+            onMouseEnter={() => setIsAutoplay(false)}
+            onMouseLeave={() => setIsAutoplay(true)}
           >
             {discountProducts.map((product) => (
               <div
                 key={product.id}
-                className="shrink-0 w-[calc(100vw-2rem)] sm:w-[calc(50vw-1rem)] md:w-[calc(33.333vw-1.25rem)] lg:w-96 snap-start"
+                className="shrink-0 w-[680px] transition-all duration-300"
               >
-                <div className="relative aspect-3/4 sm:aspect-2/3 lg:aspect-auto lg:h-150 rounded-lg sm:rounded-xl overflow-hidden bg-card border border-border shadow-lg">
+                <div className="relative w-full aspect-video bg-gradient-to-b from-secondary/20 to-background rounded-xl overflow-hidden transition-shadow">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover"
+                    className="object-contain p-3"
                     priority={false}
-                    sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="680px"
                   />
-
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-
-                  <Badge className="absolute right-3 sm:right-4 top-3 sm:top-4 bg-destructive text-destructive-foreground text-sm sm:text-base px-2 sm:px-3 py-1">
-                    -{product.discount}
-                  </Badge>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 text-white space-y-2 sm:space-y-3">
-                    <Badge className="bg-accent text-accent-foreground text-xs sm:text-sm">
-                      {product.category}
-                    </Badge>
-
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold line-clamp-2">
-                      {product.name}
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-white/90 line-clamp-2">
-                      {product.description}
-                    </p>
-
-                    <div className="flex items-center gap-2 pt-1">
-                      <span className="text-2xl sm:text-3xl font-bold text-accent">
-                        ${formatPrice(product.price)}
-                      </span>
-                      <span className="text-sm sm:text-base text-white/60 line-through">
-                        ${formatPrice(product.originalPrice)}
-                      </span>
-                    </div>
-
-                    <Button
-                      className="w-full gap-2 mt-2 sm:mt-3 bg-stone-700 hover:bg-stone-800 text-white"
-                      size="sm"
-                      onClick={() => handleAddToCart(product)}
-                    >
-                      <Plus className="h-4 w-4" />
-                      <span className="hidden sm:inline">Añadir al Carrito</span>
-                      <span className="sm:hidden">Añadir</span>
-                    </Button>
-                  </div>
                 </div>
               </div>
             ))}
@@ -191,10 +130,13 @@ export function StoriesFeed() {
           <Button
             variant="secondary"
             size="icon"
-            onClick={scrollRight}
-            className="absolute right-0 sm:right-1 top-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => {
+              scrollRight()
+              handleUserInteraction()
+            }}
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-6 w-6" />
           </Button>
         </div>
       </div>
