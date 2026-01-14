@@ -8,10 +8,10 @@ import { getProductWhatsappLink } from "@/lib/whatsapp"
 import { Product } from "@/src/types/product"
 
 interface MonturasDetailActionsProps {
-  product: Product
+  readonly product: Product
 }
 
-export function MonturasDetailActions({ product }: readonly MonturasDetailActionsProps) {
+export function MonturasDetailActions({ product }: MonturasDetailActionsProps) {
   const { addItem } = useCart()
   const { toast } = useToast()
 
@@ -31,7 +31,7 @@ export function MonturasDetailActions({ product }: readonly MonturasDetailAction
   return (
     <div className="pt-8 flex flex-col gap-3">
       <Button
-        className="w-full gap-2 h-12 text-base"
+        className="w-full gap-2 h-12 text-base bg-stone-700 hover:bg-stone-800 text-white"
         onClick={handleAddToCart}
       >
         <Plus className="h-5 w-5" />
@@ -43,7 +43,10 @@ export function MonturasDetailActions({ product }: readonly MonturasDetailAction
         rel="noopener noreferrer"
         className="cursor-pointer"
       >
-        <Button className="w-full gap-2 h-12 text-base bg-green-600 hover:bg-green-700">
+        <Button 
+          variant="outline"
+          className="w-full gap-2 h-12 text-base border-green-500 text-green-600 hover:bg-green-50"
+        >
           <MessageCircle className="h-5 w-5" />
           Consultar por WhatsApp
         </Button>

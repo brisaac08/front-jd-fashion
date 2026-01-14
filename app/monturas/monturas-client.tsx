@@ -5,7 +5,7 @@ import { ProductGrid } from "@/components/product-grid"
 import { Product } from "@/src/types/product"
 
 interface Props {
-  products: Product[]
+  readonly products: readonly Product[]
 }
 
 export default function MonturasClient({ products }: Props) {
@@ -19,7 +19,7 @@ export default function MonturasClient({ products }: Props) {
   // 🔹 Filtro SOLO por marca
   if (tipo === "marca" && valor) {
     filtrados = filtrados.filter(
-      (p) => p.category?.toLowerCase() === valor.toLowerCase()
+      (p) => p.marca?.toLowerCase() === valor.toLowerCase()
     )
   }
 

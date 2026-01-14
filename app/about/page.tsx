@@ -52,7 +52,7 @@ export default function AboutPage() {
             {/* TEXTO */}
             <div className="space-y-4 sm:space-y-6">
               <h2 className="text-xl sm:text-2xl font-semibold">
-                👓 Óptica JD Fashion
+                Óptica JD Fashion
               </h2>
 
               <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-muted-foreground leading-relaxed">

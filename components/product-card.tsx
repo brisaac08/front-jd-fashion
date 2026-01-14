@@ -5,8 +5,10 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MessageCircle } from "lucide-react"
+import { MessageCircle, Heart } from "lucide-react"
 import { getProductWhatsappLink } from "@/lib/whatsapp"
+import { formatPrice } from "@/lib/format-price"
+import { useFavorites } from "@/components/favorites-provider"
 
 interface Product {
   id: string
@@ -25,8 +27,27 @@ interface Product {
 }
 
 export function ProductCard({ product }: { readonly product: Product }) {
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const isFav = isFavorite(product.id)
+
   return (
-    <Card className="group flex flex-col overflow-hidden transition-all hover:shadow-lg h-full">
+    <Card className="group flex flex-col overflow-hidden transition-all hover:shadow-lg h-full relative">
+      {/* BOTÓN FAVORITO */}
+      <button
+        onClick={(e) => {
+          e.preventDefault()
+          toggleFavorite(product.id)
+        }}
+        className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-50 transition-all"
+        title={isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
+      >
+        <Heart
+          className={`h-5 w-5 transition-colors ${
+            isFav ? "fill-red-500 text-red-500" : "text-gray-400 hover:text-red-500"
+          }`}
+        />
+      </button>
+
       <Link href={`/monturas/${product.id}`}>
         <CardHeader className="p-0 cursor-pointer">
           <div className="relative w-full aspect-square bg-white">
@@ -55,8 +76,8 @@ export function ProductCard({ product }: { readonly product: Product }) {
             {product.color && <Badge variant="outline">{product.color}</Badge>}
           </div>
 
-          <p className="text-lg font-bold text-primary">
-            ${product.precio}
+          <p className="text-lg font-bold text-stone-700">
+            ${formatPrice(product.precio)}
           </p>
         </CardContent>
       </Link>

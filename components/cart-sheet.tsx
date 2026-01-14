@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { formatPrice } from "@/lib/format-price"
 
 export function CartSheet() {
   const { items, removeItem, updateQuantity, total } = useCart()
@@ -16,9 +17,10 @@ export function CartSheet() {
     let message = "¡Hola! Me gustaría hacer el siguiente pedido:\n\n"
 
     items.forEach((item, index) => {
+      const price = item.price || 0
       message += `${index + 1}. ${item.name}\n`
       message += `   Cantidad: ${item.quantity}\n`
-      message += `   Precio: $${item.price.toFixed(2)}\n\n`
+      message += `   Precio: $${price.toFixed(2)}\n\n`
     })
 
     message += `Total: $${total.toFixed(2)}`
@@ -45,11 +47,11 @@ export function CartSheet() {
           {items.map((item) => (
             <div key={item.id} className="flex gap-4">
               <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-muted">
-                <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+                <Image src={item.image || "/placeholder.svg"} alt={item.name || "Producto"} fill className="object-cover" />
               </div>
               <div className="flex-1">
                 <h4 className="font-semibold text-sm">{item.name}</h4>
-                <p className="mt-1 text-sm font-semibold text-primary">${item.price.toFixed(2)}</p>
+                <p className="mt-1 text-sm font-semibold text-stone-700">${formatPrice(item.price || 0)}</p>
                 <div className="mt-2 flex items-center gap-2">
                   <Button
                     variant="outline"
@@ -87,7 +89,7 @@ export function CartSheet() {
         <Separator />
         <div className="flex items-center justify-between text-lg font-semibold">
           <span>Total</span>
-          <span className="text-primary">${total.toFixed(2)}</span>
+          <span className="text-stone-700">${formatPrice(total)}</span>
         </div>
         <Button className="w-full" size="lg" onClick={handleWhatsAppOrder}>
           Enviar Pedido por WhatsApp

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, ChevronLeft, ChevronRight } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { useToast } from "@/hooks/use-toast"
+import { formatPrice } from "@/lib/format-price"
 
 const discountProducts = [
   {
@@ -164,15 +165,15 @@ export function StoriesFeed() {
 
                     <div className="flex items-center gap-2 pt-1">
                       <span className="text-2xl sm:text-3xl font-bold text-accent">
-                        ${product.price.toFixed(2)}
+                        ${formatPrice(product.price)}
                       </span>
                       <span className="text-sm sm:text-base text-white/60 line-through">
-                        ${product.originalPrice.toFixed(2)}
+                        ${formatPrice(product.originalPrice)}
                       </span>
                     </div>
 
                     <Button
-                      className="w-full gap-2 mt-2 sm:mt-3"
+                      className="w-full gap-2 mt-2 sm:mt-3 bg-stone-700 hover:bg-stone-800 text-white"
                       size="sm"
                       onClick={() => handleAddToCart(product)}
                     >
