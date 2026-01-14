@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from "react"
 
 interface Product {
   id: string
@@ -25,7 +25,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined)
 const CART_STORAGE_KEY = "jd_fashion_cart"
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }: { readonly children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isHydrated, setIsHydrated] = useState(false)
 
@@ -34,7 +34,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const storedCart = localStorage.getItem(CART_STORAGE_KEY)
       if (storedCart) {
-        setItems(JSON.parse(storedCart))
+        const parsed = JSON.parse(storedCart)
+        // Filtrar items que no tengan propiedades esenciales
+        const validItems = parsed.filter(
+          (item: CartItem) =>
+            item.id &&
+            item.name &&
+            item.price !== undefined &&
+            item.quantity > 0
+        )
+        setItems(validItems)
       }
     } catch (error) {
       console.error("Error al cargar carrito:", error)
@@ -75,10 +84,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([])
   }
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = items.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
+
+  const value = useMemo(
+    () => ({ items, addItem, removeItem, updateQuantity, clearCart, total }),
+    [items, total]
+  )
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   )

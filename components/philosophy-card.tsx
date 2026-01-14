@@ -67,7 +67,7 @@ export function PhilosophyCard({
           <Card className="h-full transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
             <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center justify-center gap-4 h-full">
               {Icon && (
-                <Icon className="h-10 w-10 sm:h-12 sm:w-12 text-primary transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
+                <Icon className="h-10 w-10 sm:h-12 sm:w-12 text-stone-700 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12" />
               )}
               <div className="space-y-1 sm:space-y-2">
                 <p className="font-semibold text-sm sm:text-base leading-snug">
@@ -93,7 +93,7 @@ export function PhilosophyCard({
           <Card className="h-full transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
             <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center justify-center gap-3 h-full">
               {Icon && (
-                <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary shrink-0" />
+                <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-stone-700 shrink-0" />
               )}
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm sm:text-base text-foreground">

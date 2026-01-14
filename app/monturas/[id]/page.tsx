@@ -6,8 +6,9 @@ import { getMonturas } from "@/src/services/monturas"
 import { Montura } from "@/src/types/montura"
 import { monturaToProduct } from "@/src/adapters/montura-to-product"
 import { MonturasDetailActions } from "@/components/montura-detail-actions"
+import { formatPrice } from "@/lib/format-price"
 
-export default async function MonturasDetallePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MonturasDetallePage({ params }: { readonly params: Promise<{ id: string }> }) {
   const { id } = await params
   
   let montura: Montura | null = null
@@ -93,8 +94,8 @@ export default async function MonturasDetallePage({ params }: { params: Promise<
 
               {/* Precio */}
               <div className="flex items-baseline gap-2 pt-2">
-                <span className="text-5xl font-bold text-primary">
-                  ${montura.precio?.toFixed(2) || "0.00"}
+                <span className="text-5xl font-bold text-stone-700">
+                  ${formatPrice(montura.precio || 0)}
                 </span>
               </div>
 

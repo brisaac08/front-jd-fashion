@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 
 import { CartProvider } from "@/components/cart-provider"
+import { FavoritesProvider } from "@/components/favorites-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -41,12 +42,14 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <CartProvider>
-          <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
-            <Header /> 
-            <div className="flex-1 w-full pt-16">
-              {children}
+          <FavoritesProvider>
+            <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+              <Header /> 
+              <div className="flex-1 w-full pt-16">
+                {children}
+              </div>
             </div>
-          </div>
+          </FavoritesProvider>
           <Toaster />
         </CartProvider>
         <Analytics />

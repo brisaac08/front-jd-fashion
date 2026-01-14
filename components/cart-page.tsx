@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Minus, Plus, Trash2, Send } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { formatPrice } from "@/lib/format-price"
 
 interface CustomerData {
   firstName: string
@@ -73,11 +74,12 @@ export function CartPage() {
     message += `━━━━━━━━━━━━━━━━━━\n`
 
     items.forEach((item) => {
+      const price = item.price || 0
       message += `\n📷 ${item.name}\n`
       message += `Referencia: ${item.id}\n`
       message += `Cantidad: ${item.quantity}\n`
-      message += `Precio unitario: $${item.price.toFixed(2)}\n`
-      message += `Subtotal: $${(item.price * item.quantity).toFixed(2)}\n`
+      message += `Precio unitario: $${price.toFixed(2)}\n`
+      message += `Subtotal: $${(price * item.quantity).toFixed(2)}\n`
       message += `Imagen: ${item.image}\n`
       message += `━━━━━━━━━━━━━━━━━━\n`
     })
@@ -142,13 +144,13 @@ export function CartPage() {
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3 sm:gap-4 pb-4 border-b last:border-0">
                       <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-muted shrink-0">
-                        <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" sizes="120px" />
+                        <Image src={item.image || "/placeholder.svg"} alt={item.name || "Producto"} fill className="object-cover" sizes="120px" />
                       </div>
 
                       <div className="flex-1 min-w-0 flex flex-col">
                         <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{item.name}</h3>
                         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Ref: {item.id}</p>
-                        <p className="text-base sm:text-lg font-bold text-primary mt-auto">${item.price.toFixed(2)}</p>
+                        <p className="text-base sm:text-lg font-bold text-stone-700 mt-auto">${formatPrice(item.price || 0)}</p>
                       </div>
 
                       <div className="flex flex-col items-end gap-2">
@@ -249,7 +251,7 @@ export function CartPage() {
                         className="rounded border-input cursor-pointer"
                       />
                       <Label htmlFor="needsShipping" className="font-normal cursor-pointer text-sm">
-                        Necesito envío a domicilio (+${shippingCost.toFixed(2)})
+                        Necesito envío a domicilio (+${formatPrice(shippingCost)})
                       </Label>
                     </div>
 
@@ -282,13 +284,13 @@ export function CartPage() {
                       <span className="text-muted-foreground">
                         Subtotal ({items.reduce((sum, item) => sum + item.quantity, 0)} productos)
                       </span>
-                      <span className="font-semibold">${total.toFixed(2)}</span>
+                      <span className="font-semibold">${formatPrice(total)}</span>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Envío</span>
                       <span className="font-semibold">
-                        {shippingCost > 0 ? `$${shippingCost.toFixed(2)}` : "Retiro en tienda"}
+                        {shippingCost > 0 ? `$${formatPrice(shippingCost)}` : "Retiro en tienda"}
                       </span>
                     </div>
                   </div>
@@ -297,7 +299,7 @@ export function CartPage() {
 
                   <div className="flex justify-between text-base sm:text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-primary">${finalTotal.toFixed(2)}</span>
+                    <span className="text-stone-700">${formatPrice(finalTotal)}</span>
                   </div>
 
                   <Button className="w-full gap-2 sm:text-base" size="lg" onClick={handleSubmit}>
