@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Info, User, Heart, ShoppingCart, Menu, X, Grid } from "lucide-react"
@@ -15,7 +16,12 @@ export function Header() {
   const { items } = useCart()
   const { favorites } = useFavorites()
   const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
 
   return (
     <>
