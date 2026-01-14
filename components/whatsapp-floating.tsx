@@ -1,6 +1,15 @@
 "use client"
 
+import { usePathname } from "next/navigation"
+
 export function WhatsappFloatingButton() {
+  const pathname = usePathname()
+  
+  // No mostrar en rutas de admin o login
+  if (pathname.startsWith("/admin") || pathname.startsWith("/login")) {
+    return null
+  }
+
   const phoneNumber = "573245704999"
   const message = "Hola 👋, tengo una consulta sobre sus productos"
   const encodedMessage = encodeURIComponent(message)

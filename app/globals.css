@@ -122,12 +122,11 @@
   }
   
   html {
-    @apply h-full;
     scroll-behavior: smooth;
   }
   
   body {
-    @apply h-full bg-background text-foreground;
+    @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Evita scroll horizontal en móviles */

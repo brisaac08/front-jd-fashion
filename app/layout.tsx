@@ -7,7 +7,7 @@ import { CartProvider } from "@/components/cart-provider"
 import { FavoritesProvider } from "@/components/favorites-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { FooterWrapper } from "@/components/footer-wrapper"
 import { WhatsappFloatingButton } from "@/components/whatsapp-floating"
 
 
@@ -48,12 +48,12 @@ export default function RootLayout({
               <div className="flex-1 w-full pt-16">
                 {children}
               </div>
+              <FooterWrapper />
             </div>
           </FavoritesProvider>
           <Toaster />
         </CartProvider>
         <Analytics />
-        <Footer />
         <WhatsappFloatingButton />
       </body>
     </html>
