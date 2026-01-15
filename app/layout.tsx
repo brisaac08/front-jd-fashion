@@ -45,7 +45,7 @@ export default function RootLayout({
           <FavoritesProvider>
             <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
               <Header /> 
-              <div className="flex-1 w-full pt-16">
+              <div className="flex-1 w-full pt-20">
                 {children}
               </div>
               <FooterWrapper />

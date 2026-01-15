@@ -23,7 +23,6 @@ export async function POST(req: Request) {
   }
 
 const data = await res.json()
-console.log("Respuesta de login:", data)
 
 // Ajusta aquí si el campo no es 'token'
 const token = data.token || data.access_token || data.jwt || "";

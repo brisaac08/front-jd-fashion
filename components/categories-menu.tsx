@@ -3,16 +3,61 @@
 import { useState, useEffect, useRef } from "react"
 import { ChevronDown } from "lucide-react"
 import { categories } from "@/lib/categories"
+import { Product } from "@/src/types/product"
+import { compareNormalized } from "@/lib/normalize-filter"
 
-export function CategoriesMenu() {
+interface Props {
+  readonly products?: readonly Product[]
+}
+
+export function CategoriesMenu({ products = [] }: Props) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // 🔹 Función para verificar si un filtro tiene productos disponibles
+  const hasProducts = (filterType: string, filterValue: string): boolean => {
+    if (!products || products.length === 0) return true // Mostrar todos si no hay productos
+    
+    return products.some((p) => {
+      // Caso especial para "Sol"
+      if (compareNormalized(filterValue, "Sol")) {
+        return p.nombre?.includes(" - S") || p.nombre?.includes("-S")
+      }
+
+      // Caso especial para "Dama"
+      if (compareNormalized(filterValue, "Dama")) {
+        return p.genero && compareNormalized(p.genero, "Dama")
+      }
+
+      // Caso especial para "Caballero"
+      if (compareNormalized(filterValue, "Caballero")) {
+        return p.genero && compareNormalized(p.genero, "Caballero")
+      }
+
+      // Para otros filtros
+      let fieldValue: string | undefined | null = null
+      
+      if (filterType === "marca") fieldValue = p.marca
+      else if (filterType === "estilo") fieldValue = p.estilo
+      else if (filterType === "material") fieldValue = p.material
+      else if (filterType === "forma") fieldValue = p.forma
+      else if (filterType === "genero") fieldValue = p.genero
+      else if (filterType === "tipo") fieldValue = p.tipo
+
+      return fieldValue ? compareNormalized(fieldValue, filterValue) : false
+    })
+  }
+
+  // 🔹 Función para verificar si una categoría tiene al menos un item disponible
+  const hasCategoryProducts = (items: string[], filterType: string): boolean => {
+    if (!products || products.length === 0) return true
+    return items.some((item) => hasProducts(filterType, item))
+  }
+
   const handleNavigate = (url: string) => {
-    console.log("🔗 NAVEGANDO A:", url)
     setOpen(false)
     setTimeout(() => {
-      window.location.href = url
+      globalThis.location.href = url
     }, 100)
   }
 
@@ -71,35 +116,41 @@ export function CategoriesMenu() {
                 {categories.principales.title}
               </h4>
 
-              {categories.principales.items.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => handleNavigate(`/monturas?tipo=genero&valor=${encodeURIComponent(item)}`)}
-                  className="block w-full text-left py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-
-            {/* 🔹 GRUPOS */}
-            {categories.grupos.map((group) => (
-              <div key={group.key}>
-                <h4 className="mb-3 font-semibold text-sm sm:text-base">
-                  {group.title}
-                </h4>
-
-                {group.items.map((item) => (
+              {categories.principales.items
+                .filter((item) => hasProducts("genero", item))
+                .map((item) => (
                   <button
                     key={item}
-                    onClick={() => handleNavigate(`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`)}
+                    onClick={() => handleNavigate(`/monturas?tipo=genero&valor=${encodeURIComponent(item)}`)}
                     className="block w-full text-left py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {item}
                   </button>
                 ))}
-              </div>
-            ))}
+            </div>
+
+            {/* 🔹 GRUPOS */}
+            {categories.grupos
+              .filter((group) => hasCategoryProducts(group.items, group.key))
+              .map((group) => (
+                <div key={group.key}>
+                  <h4 className="mb-3 font-semibold text-sm sm:text-base">
+                    {group.title}
+                  </h4>
+
+                  {group.items
+                    .filter((item) => hasProducts(group.key, item))
+                    .map((item) => (
+                      <button
+                        key={item}
+                        onClick={() => handleNavigate(`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`)}
+                        className="block w-full text-left py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {item}
+                      </button>
+                    ))}
+                </div>
+              ))}
 
           </div>
         </div>

@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/components/cart-provider"
 import { useFavorites } from "@/components/favorites-provider"
 import { categories } from "@/lib/categories"
+import { compareNormalized } from "@/lib/normalize-filter"
+import { Product } from "@/src/types/product"
 
 export function Header() {
   const { items } = useCart()
@@ -18,12 +20,86 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [products, setProducts] = useState<Product[]>([])
   const pathname = usePathname()
   const router = useRouter()
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
   
   // Hide header icons if in admin
   const isAdmin = pathname?.startsWith("/admin")
+
+  // 🔹 Cargar productos al montar el componente
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await fetch("/api/admin/monturas")
+        if (!res.ok) return
+        const monturas = await res.json()
+        const filtered = monturas
+          .filter((m: any) => m.activo)
+          .filter((m: any) => m.imagen_url || m.precio)
+          .map((m: any) => ({
+            id: m.id,
+            nombre: m.nombre,
+            marca: m.marca,
+            precio: m.precio,
+            imagen_url: m.imagen_url || "/placeholder.svg",
+            descripcion: m.descripcion,
+            color: m.color,
+            material: m.material,
+            genero: m.genero,
+            estilo: m.estilo,
+            tipo: m.tipo,
+            forma: m.forma,
+          }))
+        setProducts(filtered)
+      } catch (err) {
+        console.error("Error loading products:", err)
+      }
+    }
+
+    loadProducts()
+  }, [])
+
+  // 🔹 Función para verificar si un filtro tiene productos disponibles
+  const hasProducts = (filterType: string, filterValue: string): boolean => {
+    if (!products || products.length === 0) return true
+
+    return products.some((p) => {
+      // Caso especial para "Sol"
+      if (compareNormalized(filterValue, "Sol")) {
+        return p.nombre?.includes(" - S") || p.nombre?.includes("-S")
+      }
+
+      // Caso especial para "Dama"
+      if (compareNormalized(filterValue, "Dama")) {
+        return p.genero && compareNormalized(p.genero, "Dama")
+      }
+
+      // Caso especial para "Caballero"
+      if (compareNormalized(filterValue, "Caballero")) {
+        return p.genero && compareNormalized(p.genero, "Caballero")
+      }
+
+      // Para otros filtros
+      let fieldValue: string | undefined | null = null
+      
+      if (filterType === "marca") fieldValue = p.marca
+      else if (filterType === "estilo") fieldValue = p.estilo
+      else if (filterType === "material") fieldValue = p.material
+      else if (filterType === "forma") fieldValue = p.forma
+      else if (filterType === "genero") fieldValue = p.genero
+      else if (filterType === "tipo") fieldValue = p.tipo
+
+      return fieldValue ? compareNormalized(fieldValue, filterValue) : false
+    })
+  }
+
+  // 🔹 Función para verificar si una categoría tiene al menos un item disponible
+  const hasCategoryProducts = (items: string[], filterType: string): boolean => {
+    if (!products || products.length === 0) return true
+    return items.some((item) => hasProducts(filterType, item))
+  }
 
   useEffect(() => {
     setMenuOpen(false)
@@ -45,13 +121,13 @@ export function Header() {
         <div className="flex h-20 items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 mx-auto w-full">
 
           {/* LOGO - Tamaño natural */}
-          <Link href="/" className="flex-shrink-0 flex items-center cursor-pointer">
+          <Link href="/" className="shrink-0 flex items-center cursor-pointer">
             <Image
               src="/logo.png"
               alt="Óptica JD Fashion"
-              width={120}
-              height={50}
-              className="h-12 w-auto"
+              width={180}
+              height={80}
+              className="h-14 w-auto"
               priority
             />
           </Link>
@@ -78,7 +154,7 @@ export function Header() {
           )}
 
           {/* ICONS - Right */}
-          <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 shrink-0">
             {!isAdmin && (
               <>
                 {/* Search Mobile Icon */}
@@ -193,36 +269,42 @@ export function Header() {
                 <h4 className="mb-3 font-semibold text-sm sm:text-base">
                   {categories.principales.title}
                 </h4>
-                {categories.principales.items.map((item) => (
-                  <Link
-                    key={item}
-                    href="/monturas"
-                    onClick={() => setMenuOpen(false)}
-                    className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </div>
-
-              {/* GRUPOS */}
-              {categories.grupos.map((group) => (
-                <div key={group.key}>
-                  <h4 className="mb-3 font-semibold text-sm sm:text-base">
-                    {group.title}
-                  </h4>
-                  {group.items.map((item) => (
+                {categories.principales.items
+                  .filter((item) => hasProducts("genero", item))
+                  .map((item) => (
                     <Link
                       key={item}
-                      href={`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`}
+                      href={`/monturas?tipo=genero&valor=${encodeURIComponent(item)}`}
                       onClick={() => setMenuOpen(false)}
                       className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
                       {item}
                     </Link>
                   ))}
-                </div>
-              ))}
+              </div>
+
+              {/* GRUPOS */}
+              {categories.grupos
+                .filter((group) => hasCategoryProducts(group.items, group.key))
+                .map((group) => (
+                  <div key={group.key}>
+                    <h4 className="mb-3 font-semibold text-sm sm:text-base">
+                      {group.title}
+                    </h4>
+                    {group.items
+                      .filter((item) => hasProducts(group.key, item))
+                      .map((item) => (
+                        <Link
+                          key={item}
+                          href={`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`}
+                          onClick={() => setMenuOpen(false)}
+                          className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {item}
+                        </Link>
+                      ))}
+                  </div>
+                ))}
             </div>
           </div>
         </div>

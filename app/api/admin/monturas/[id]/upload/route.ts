@@ -7,7 +7,6 @@ export async function POST(request: Request, context: { params: { id: string } }
   // log token presence
   const cookieStore = await cookies()
   const token = cookieStore.get("admin-token")?.value
-  console.log("Upload route token present:", Boolean(token))
 
   try {
     const form = await request.formData()
@@ -24,8 +23,6 @@ export async function POST(request: Request, context: { params: { id: string } }
     for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
     const b64 = Buffer.from(binary, "binary").toString("base64")
     const dataUrl = `data:${file.type};base64,${b64}`
-
-    console.log(`Uploaded image for montura ${id}: size=${file.size} type=${file.type}`)
 
     return NextResponse.json({ imagen_url: dataUrl })
   } catch (err) {
