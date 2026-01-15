@@ -314,7 +314,7 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
             <th className="p-4 text-center">Estilo</th>
             <th className="p-4 text-center">Tipo</th>
             <th className="p-4 text-center">Forma</th>
-            <th className="p-4 text-center">Activo</th>
+            <th className="p-4 text-center">Estado</th>
             <th className="p-4 text-center">Acciones</th>
           </tr>
         </thead>
@@ -346,7 +346,9 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
               <td className="p-4 text-center text-sm">{p.tipo ?? "-"}</td>
               <td className="p-4 text-center text-sm">{p.forma ?? "-"}</td>
               <td className="p-4 text-center">
-                <Switch checked={p.activo} disabled />
+                <span className={`text-sm font-medium px-2 py-1 rounded ${p.activo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                  {p.activo ? "Activo" : "Inactivo"}
+                </span>
               </td>
               <td className="p-4 text-center">
                 <Button size="icon" variant="ghost" onClick={() => setEditing(p)}>

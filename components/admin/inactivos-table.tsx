@@ -48,14 +48,13 @@ export function InactivosTable({ products, onUpdated }: Props) {
 
     setActivating(productId)
     try {
-      const res = await fetch(`${API_URL}/admin/monturas/${productId}`, {
+      const res = await fetch(`${API_URL}/admin/monturas/${productId}/activar`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "api-key": API_KEY ?? "",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ activo: true }),
       })
 
       if (!res.ok) {
@@ -164,6 +163,7 @@ export function InactivosTable({ products, onUpdated }: Props) {
               <th className="p-4 text-center">Material</th>
               <th className="p-4 text-center">Género</th>
               <th className="p-4 text-center">Estilo</th>
+              <th className="p-4 text-center">Estado</th>
               <th className="p-4 text-center">Acciones</th>
             </tr>
           </thead>
@@ -192,6 +192,11 @@ export function InactivosTable({ products, onUpdated }: Props) {
                 <td className="p-4 text-center text-sm">{p.material ?? "-"}</td>
                 <td className="p-4 text-center text-sm">{p.genero ?? "-"}</td>
                 <td className="p-4 text-center text-sm">{p.estilo ?? "-"}</td>
+                <td className="p-4 text-center">
+                  <span className="text-sm font-medium px-2 py-1 rounded bg-red-100 text-red-700">
+                    Inactivo
+                  </span>
+                </td>
                 
                 <td className="p-4 text-center space-x-2">
                   <Button

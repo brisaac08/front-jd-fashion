@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
 import ImageUploadInput from "@/components/admin/image-upload-input"
 import { useToast } from "@/hooks/use-toast"
 import { useAdminToken } from "@/hooks/use-admin-token"
@@ -24,7 +23,6 @@ export function CreateMonturaForm() {
   const [stock, setStock] = useState(0)
   const [descripcion, setDescripcion] = useState("")
   const [imagen_url, setImagenUrl] = useState<string>("")
-  const [activo, setActivo] = useState(true)
 
   // 🆕 NUEVOS CAMPOS
   const [color, setColor] = useState("")
@@ -110,7 +108,7 @@ export function CreateMonturaForm() {
       stock,
       descripcion: descripcion || undefined,
       imagen_url,
-      activo,
+      activo: true,
       color: color || undefined,
       material: material || undefined,
       genero: genero || undefined,
@@ -273,11 +271,6 @@ export function CreateMonturaForm() {
           placeholder="Describe la montura..."
           rows={4}
         />
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Switch checked={activo} onCheckedChange={setActivo} />
-        <span>Activo</span>
       </div>
 
       <div>
