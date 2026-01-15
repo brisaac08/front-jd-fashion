@@ -5,7 +5,7 @@ export function getProductWhatsappLink({
   productName: string
   price?: number
 }) {
-  const phoneNumber = "573245704999"
+  const phoneNumber = "573246718202"
 
   const message = `
 Hola 👋

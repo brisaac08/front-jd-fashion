@@ -1,5 +1,6 @@
 import { Montura } from "@/src/types/montura"
 import { Product } from "@/src/types/product"
+import { getMarcaBanner } from "@/lib/marca-banners"
 
 export interface CartProduct extends Product {
   // Propiedades para el carrito
@@ -17,12 +18,12 @@ export function monturaToProduct(m: Montura): CartProduct {
     precio: m.precio,
     imagen_url: m.imagen_url || "/placeholder.svg",
     descripcion: m.descripcion ?? undefined,
-    color: m.color ?? undefined,
     material: m.material ?? undefined,
     genero: m.genero ?? undefined,
     estilo: m.estilo ?? undefined,
     tipo: m.tipo ?? undefined,
     forma: m.forma ?? undefined,
+    marca_banner: getMarcaBanner(m.marca),
     
     // Propiedades para el carrito
     name: m.nombre,
