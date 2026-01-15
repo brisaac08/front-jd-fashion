@@ -5,10 +5,10 @@ import { Plus, MessageCircle } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { useToast } from "@/hooks/use-toast"
 import { getProductWhatsappLink } from "@/lib/whatsapp"
-import { Product } from "@/src/types/product"
+import type { CartProduct } from "@/src/adapters/montura-to-product"
 
 interface MonturasDetailActionsProps {
-  readonly product: Product
+  readonly product: CartProduct
 }
 
 export function MonturasDetailActions({ product }: MonturasDetailActionsProps) {

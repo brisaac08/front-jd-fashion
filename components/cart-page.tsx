@@ -143,8 +143,8 @@ export function CartPage() {
                 <CardContent className="space-y-4">
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3 sm:gap-4 pb-4 border-b last:border-0">
-                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-muted shrink-0">
-                        <Image src={item.image || "/placeholder.svg"} alt={item.name || "Producto"} fill className="object-cover" sizes="120px" />
+                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-muted shrink-0 flex-shrink-0">
+                        <Image src={item.image || "/placeholder.svg"} alt={item.name || "Producto"} fill className="object-contain" sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, 96px" />
                       </div>
 
                       <div className="flex-1 min-w-0 flex flex-col">

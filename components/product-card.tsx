@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { MessageCircle, Heart } from "lucide-react"
 import { getProductWhatsappLink } from "@/lib/whatsapp"
 import { formatPrice } from "@/lib/format-price"
+import { formatGender } from "@/lib/format-gender"
 import { useFavorites } from "@/components/favorites-provider"
 
 interface Product {
@@ -71,7 +72,7 @@ export function ProductCard({ product }: { readonly product: Product }) {
           )}
 
           <div className="flex flex-wrap gap-1">
-            {product.genero && <Badge variant="secondary">{product.genero}</Badge>}
+            {product.genero && <Badge variant="secondary">{formatGender(product.genero)}</Badge>}
             {product.forma && <Badge variant="outline">{product.forma}</Badge>}
             {product.color && <Badge variant="outline">{product.color}</Badge>}
           </div>
