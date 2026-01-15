@@ -21,6 +21,9 @@ export function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+  
+  // Hide header icons if in admin
+  const isAdmin = pathname?.startsWith("/admin")
 
   useEffect(() => {
     setMenuOpen(false)
@@ -74,65 +77,69 @@ export function Header() {
 
           {/* ICONS - Right */}
           <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0">
-            {/* Search Mobile Icon */}
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="md:hidden h-9 w-9"
-              title="Buscar"
-            >
-              {searchOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Search className="h-5 w-5" />
-              )}
-            </Button>
+            {!isAdmin && (
+              <>
+                {/* Search Mobile Icon */}
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setSearchOpen(!searchOpen)}
+                  className="md:hidden h-9 w-9"
+                  title="Buscar"
+                >
+                  {searchOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Search className="h-5 w-5" />
+                  )}
+                </Button>
 
-            {/* Info */}
-            <Link href="/about" title="Sobre nosotros" className="hidden sm:block">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Info className="h-5 w-5" />
-              </Button>
-            </Link>
+                {/* Info */}
+                <Link href="/about" title="Sobre nosotros" className="hidden sm:block">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </Link>
 
-            {/* User/Login */}
-            <Link href="/login" title="Mi cuenta" className="hidden sm:block">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+                {/* User/Login */}
+                <Link href="/login" title="Mi cuenta" className="hidden sm:block">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </Link>
 
-            {/* Favorites */}
-            <Link href="/favoritos" className="relative" title="Mis favoritos">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Heart className="h-5 w-5" />
-                {favorites.length > 0 && (
-                  <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
-                    {favorites.length}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
+                {/* Favorites */}
+                <Link href="/favoritos" className="relative" title="Mis favoritos">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Heart className="h-5 w-5" />
+                    {favorites.length > 0 && (
+                      <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
+                        {favorites.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
 
-            {/* Shopping Cart */}
-            <Link href="/carrito" className="relative" title="Carrito">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <ShoppingCart className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs">
-                    {itemCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
+                {/* Shopping Cart */}
+                <Link href="/carrito" className="relative" title="Carrito">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <ShoppingCart className="h-5 w-5" />
+                    {itemCount > 0 && (
+                      <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs">
+                        {itemCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
 
-            {/* Catálogo */}
-            <Link href="/monturas" title="Catálogo" className="hidden sm:block">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Grid className="h-5 w-5" />
-              </Button>
-            </Link>
+                {/* Catálogo */}
+                <Link href="/monturas" title="Catálogo" className="hidden sm:block">
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Grid className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </>
+            )}
 
             {/* Menu Hamburguesa */}
             <Button 

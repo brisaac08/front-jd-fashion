@@ -1,8 +1,9 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Upload, X } from "lucide-react"
 
 interface Props {
   initialUrl?: string | null
@@ -18,9 +19,9 @@ export default function ImageUploadInput({
   maxSizeBytes = 5 * 1024 * 1024, // 5MB
 }: Props) {
   const [preview, setPreview] = useState<string | null>(initialUrl)
-  const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validate = useCallback(
     (f: File) => {
@@ -33,18 +34,34 @@ export default function ImageUploadInput({
   )
 
   const handleFile = useCallback(
-    (f: File | null) => {
+    async (f: File | null) => {
       if (!f) return
       const err = validate(f)
       if (err) {
         setError(err)
         return
       }
-      setFile(f)
+      
+      // Show preview immediately
       const url = URL.createObjectURL(f)
       setPreview(url)
+      
+      // Auto-upload if uploadFn is available
+      if (uploadFn) {
+        setUploading(true)
+        try {
+          const uploadedUrl = await uploadFn(f)
+          setPreview(uploadedUrl)
+          onUploaded?.(uploadedUrl)
+        } catch (err) {
+          setError(String(err))
+          setPreview(null)
+        } finally {
+          setUploading(false)
+        }
+      }
     },
-    [validate]
+    [validate, uploadFn, onUploaded]
   )
 
   const onDrop = (e: React.DragEvent) => {
@@ -58,49 +75,64 @@ export default function ImageUploadInput({
     handleFile(f)
   }
 
-  async function doUpload() {
-    if (!file) return
-    if (!uploadFn) return
-    setUploading(true)
-    try {
-      const url = await uploadFn(file)
-      onUploaded?.(url)
-    } catch (err) {
-      setError(String(err))
-    } finally {
-      setUploading(false)
+  const handleClear = () => {
+    setPreview(initialUrl || null)
+    setError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
     }
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={onDrop}
         className={cn(
-          "border-dashed border-2 rounded p-4 text-center",
-          preview ? "border-border" : "border-muted"
+          "relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer",
+          "hover:border-primary hover:bg-primary/5",
+          preview ? "border-border bg-muted/30" : "border-muted"
         )}
+        onClick={() => fileInputRef.current?.click()}
       >
-        <p className="text-sm">Arrastra una imagen aquí o selecciona</p>
-        <input type="file" accept="image/*" onChange={onSelect} className="mt-2" />
-        {error && <p className="text-sm text-destructive mt-2">{error}</p>}
+        {!preview && (
+          <div className="flex flex-col items-center gap-3">
+            <Upload className="h-8 w-8 text-muted-foreground" />
+            <p className="text-sm font-medium">Arrastra una imagen aquí</p>
+            <p className="text-xs text-muted-foreground">o haz clic para seleccionar</p>
+          </div>
+        )}
+        
+        <input 
+          ref={fileInputRef}
+          type="file" 
+          accept="image/*" 
+          onChange={onSelect} 
+          className="hidden"
+          disabled={uploading}
+        />
+
+        {preview && (
+          <img src={preview} alt="preview" className="h-40 w-auto object-contain mx-auto rounded" />
+        )}
       </div>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       {preview && (
-        <div className="mt-2">
-          <img src={preview} alt="preview" className="h-36 w-auto object-contain rounded" />
+        <div className="flex gap-2 justify-end">
+          <Button 
+            variant="secondary" 
+            size="sm"
+            onClick={handleClear}
+            disabled={uploading}
+            className="gap-2"
+          >
+            <X className="h-4 w-4" />
+            Quitar
+          </Button>
         </div>
       )}
-
-      <div className="flex gap-2 justify-end mt-2">
-        <Button variant="outline" onClick={() => { setFile(null); setPreview(initialUrl); setError(null) }}>
-          Quitar
-        </Button>
-        <Button disabled={!file || !uploadFn || uploading} onClick={doUpload}>
-          {uploading ? "Subiendo..." : "Subir imagen"}
-        </Button>
-      </div>
     </div>
   )
 }
