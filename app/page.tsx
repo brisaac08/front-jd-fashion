@@ -8,6 +8,7 @@ export default async function Home() {
 
   const products = monturas
     .filter((m) => m.activo)
+    .filter((m) => m.imagen_url || m.precio) // 🔹 Ocultar productos sin foto Y sin precio
     .slice(0, 10)
     .map(monturaToProduct)
 

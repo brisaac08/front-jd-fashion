@@ -7,6 +7,7 @@ export default async function MonturasPage() {
 
   const products = monturas
     .filter((m) => m.activo)
+    .filter((m) => m.imagen_url || m.precio) // 🔹 Ocultar productos sin foto Y sin precio
     .map(monturaToProduct)
 
   return <MonturasClient products={products} />
