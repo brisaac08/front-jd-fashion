@@ -19,8 +19,6 @@ export default function MonturasClient({ products }: Props) {
   const valor = searchParams.get("valor")
   const buscar = searchParams.get("buscar")
 
-  console.log("📍 PARÁMETROS RECIBIDOS:", { tipo, valor, buscar })
-
   useEffect(() => {
     let filtered = [...products]
 
@@ -36,34 +34,24 @@ export default function MonturasClient({ products }: Props) {
 
   // 🔹 Filtro por tipo (estilo, material, forma, genero, tipo)
   if (tipo && valor) {
-    console.log("🔹 Filtrando por:", { tipo, valor, totalProductos: filtered.length })
     
     filtered = filtered.filter((p) => {
       // 🔹 Caso especial para "Sol" - buscar por patrón " - S" en el nombre
       if (compareNormalized(valor, "Sol")) {
         const esSol = p.nombre?.includes(" - S") || p.nombre?.includes("-S")
-        if (esSol) console.log("✅ Sol encontrado:", p.nombre)
         return esSol
       }
 
       // 🔹 Caso especial para "Damas" - buscar en genero o fallback por nombre
       if (compareNormalized(valor, "Damas")) {
         const tieneGenero = p.genero && compareNormalized(p.genero, "Damas")
-        if (tieneGenero) {
-          console.log("✅ Dama por genero:", p.nombre, "genero:", p.genero)
-          return true
-        }
-        return false
+        return tieneGenero
       }
 
       // 🔹 Caso especial para "Caballeros" - buscar en genero o fallback por nombre
       if (compareNormalized(valor, "Caballeros")) {
         const tieneGenero = p.genero && compareNormalized(p.genero, "Caballeros")
-        if (tieneGenero) {
-          console.log("✅ Caballero por genero:", p.nombre, "genero:", p.genero)
-          return true
-        }
-        return false
+        return tieneGenero
       }
 
       // 🔹 Para otros filtros (marca, estilo, material, forma, tipo, genero)
@@ -83,15 +71,11 @@ export default function MonturasClient({ products }: Props) {
                     : undefined
 
       if (!fieldValue) {
-        console.log(`❌ Campo ${tipo} vacío para producto:`, p.nombre)
         return false
       }
       const matches = compareNormalized(fieldValue, valor)
-      if (matches) console.log(`✅ Comparando ${tipo}: "${fieldValue}" vs "${valor}" = ${matches}`)
       return matches
     })
-
-      console.log("🔹 Resultados después del filtro:", filtered.length)
     }
 
     setFiltrados(filtered)

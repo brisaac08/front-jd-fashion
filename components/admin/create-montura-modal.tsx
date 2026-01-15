@@ -118,8 +118,6 @@ export function CreateMonturaForm() {
       forma: forma || undefined,
     }
 
-    console.log("DATA ENVIADA AL BACKEND:", payload)
-
     setSaving(true)
     try {
       const res = await fetch(`${API_URL}/admin/monturas/`, {

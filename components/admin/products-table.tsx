@@ -103,8 +103,6 @@ function EditMonturaModal({
       forma,
     }
 
-    console.log("DATA ENVIADA AL BACKEND:", payload)
-
     setSaving(true)
     try {
       await updateAdminMontura(product.id, payload, token)
