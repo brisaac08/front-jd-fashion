@@ -13,8 +13,19 @@ export default function MonturasClient({ products }: Props) {
 
   const tipo = searchParams.get("tipo")
   const valor = searchParams.get("valor")
+  const buscar = searchParams.get("buscar")
 
   let filtrados = [...products]
+
+  // 🔹 Filtro de búsqueda por marca y nombre
+  if (buscar) {
+    const searchLower = buscar.toLowerCase()
+    filtrados = filtrados.filter(
+      (p) =>
+        p.nombre?.toLowerCase().includes(searchLower) ||
+        p.marca?.toLowerCase().includes(searchLower)
+    )
+  }
 
   // 🔹 Filtro SOLO por marca
   if (tipo === "marca" && valor) {
@@ -24,10 +35,12 @@ export default function MonturasClient({ products }: Props) {
   }
 
   // 🔹 Título dinámico
-  const titulo =
-    tipo === "marca" && valor
-      ? valor
-      : "Catálogo de Monturas"
+  let titulo = "Catálogo de Monturas"
+  if (buscar) {
+    titulo = `Resultados de búsqueda: "${buscar}"`
+  } else if (tipo === "marca" && valor) {
+    titulo = valor
+  }
 
   return (
     <main className="flex flex-col min-h-[calc(100vh-4rem)] w-full">

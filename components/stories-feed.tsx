@@ -36,19 +36,21 @@ export function StoriesFeed() {
   if (!containerRef.current) return
 
   const { scrollLeft, scrollWidth, clientWidth } = containerRef.current
+  const scrollAmount = clientWidth * 0.8 // 80% del ancho visible
 
     if (scrollLeft + clientWidth >= scrollWidth - 10) {
       // volver al inicio
       containerRef.current.scrollTo({ left: 0, behavior: "smooth" })
     } else {
-      containerRef.current.scrollBy({ left: 420, behavior: "smooth" })
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
     }
   }
 
-  const scrollLeft = () => {
+  const scrollLeftFn = () => {
     if (!containerRef.current) return
 
-    const { scrollLeft } = containerRef.current
+    const { scrollLeft, clientWidth } = containerRef.current
+    const scrollAmount = clientWidth * 0.8 // 80% del ancho visible
 
     if (scrollLeft <= 0) {
       // ir al final
@@ -57,7 +59,7 @@ export function StoriesFeed() {
         behavior: "smooth",
       })
     } else {
-      containerRef.current.scrollBy({ left: -420, behavior: "smooth" })
+      containerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" })
     }
   }
 
@@ -92,7 +94,7 @@ export function StoriesFeed() {
             variant="secondary"
             size="icon"
             onClick={() => {
-              scrollLeft()
+              scrollLeftFn()
               handleUserInteraction()
             }}
             className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20"
@@ -110,7 +112,7 @@ export function StoriesFeed() {
             {discountProducts.map((product) => (
               <div
                 key={product.id}
-                className="shrink-0 w-[680px] transition-all duration-300"
+                className="shrink-0 w-full sm:w-[90vw] md:w-[680px] lg:w-[680px] transition-all duration-300 px-2"
               >
                 <div className="relative w-full aspect-video bg-gradient-to-b from-secondary/20 to-background rounded-xl overflow-hidden transition-shadow">
                   <Image
@@ -119,7 +121,7 @@ export function StoriesFeed() {
                     fill
                     className="object-contain p-3"
                     priority={false}
-                    sizes="680px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 680px"
                   />
                 </div>
               </div>
