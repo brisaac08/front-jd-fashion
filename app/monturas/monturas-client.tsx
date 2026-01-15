@@ -106,6 +106,8 @@ export default function MonturasClient({ products }: Props) {
 
     setTitulo(newTitulo)
   }, [tipo, valor, buscar, products])
+
+  return (
     <main className="flex flex-col min-h-[calc(100vh-4rem)] w-full">
       <div className="w-full py-8 sm:py-10 md:py-12 bg-linear-to-b from-muted/30 to-background">
         <div className="px-4 sm:px-6 md:px-8 mx-auto w-full">

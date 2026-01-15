@@ -47,7 +47,7 @@ export function Header() {
           {/* LOGO - Tamaño natural */}
           <Link href="/" className="flex-shrink-0 flex items-center cursor-pointer">
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Óptica JD Fashion"
               width={120}
               height={50}
