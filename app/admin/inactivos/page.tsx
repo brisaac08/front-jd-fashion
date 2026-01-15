@@ -1,11 +1,24 @@
-import { InactivosTable } from "@/components/admin/inactivos-table"
-import { getAdminMonturas } from "@/src/services/admin-monturas"
+import { InactivosTableWrapper } from "@/components/admin/inactivos-table-wrapper"
 import { AdminProduct } from "@/src/types/admin-product"
+import { API_URL, API_KEY } from "@/lib/env"
 
 export default async function InactivosPage() {
-  const allProducts: AdminProduct[] = await getAdminMonturas()
-  // Filter only inactive products
-  const products = allProducts.filter((p) => !p.activo)
+  let products: AdminProduct[] = []
+
+  try {
+    const res = await fetch(`${API_URL}/monturas/inactivas`, {
+      headers: {
+        "api-key": API_KEY ?? "",
+      },
+      cache: "no-store",
+    })
+
+    if (res.ok) {
+      products = await res.json()
+    }
+  } catch (err) {
+    console.error("Error al cargar monturas inactivas:", err)
+  }
 
   return (
     <div>
@@ -15,7 +28,7 @@ export default async function InactivosPage() {
           <p className="text-muted-foreground">No hay monturas inactivas</p>
         </div>
       ) : (
-        <InactivosTable products={products} onUpdated={() => globalThis.location.reload()} />
+        <InactivosTableWrapper products={products} />
       )}
     </div>
   )
