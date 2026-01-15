@@ -27,7 +27,7 @@ export default function MonturasClient({ products }: Props) {
   // 🔹 Filtro de búsqueda por marca y nombre (sin espacios)
   if (buscar) {
     const searchNormalized = normalizeSearch(buscar)
-    filtrados = filtrados.filter((p) => {
+    filtered = filtered.filter((p) => {
       const nombreNormalized = normalizeSearch(p.nombre || "")
       const marcaNormalized = normalizeSearch(p.marca || "")
       return nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
@@ -36,9 +36,9 @@ export default function MonturasClient({ products }: Props) {
 
   // 🔹 Filtro por tipo (estilo, material, forma, genero, tipo)
   if (tipo && valor) {
-    console.log("🔹 Filtrando por:", { tipo, valor, totalProductos: filtrados.length })
+    console.log("🔹 Filtrando por:", { tipo, valor, totalProductos: filtered.length })
     
-    filtrados = filtrados.filter((p) => {
+    filtered = filtered.filter((p) => {
       // 🔹 Caso especial para "Sol" - buscar por patrón " - S" en el nombre
       if (compareNormalized(valor, "Sol")) {
         const esSol = p.nombre?.includes(" - S") || p.nombre?.includes("-S")
