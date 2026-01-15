@@ -60,7 +60,15 @@ export function InactivosTable({ products, onUpdated }: Props) {
 
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.detail || error.error || "Error al activar montura")
+        let errorMsg = "Error al activar montura"
+        if (typeof error === 'string') {
+          errorMsg = error
+        } else if (Array.isArray(error)) {
+          errorMsg = error[0]?.detail || error[0]?.error || String(error[0]) || "Error al activar montura"
+        } else if (error && typeof error === 'object') {
+          errorMsg = error.detail || error.error || error.message || "Error al activar montura"
+        }
+        throw new Error(errorMsg)
       }
 
       toast({
@@ -105,7 +113,15 @@ export function InactivosTable({ products, onUpdated }: Props) {
 
       if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.detail || error.error || "Error al eliminar montura")
+        let errorMsg = "Error al eliminar montura"
+        if (typeof error === 'string') {
+          errorMsg = error
+        } else if (Array.isArray(error)) {
+          errorMsg = error[0]?.detail || error[0]?.error || String(error[0]) || "Error al eliminar montura"
+        } else if (error && typeof error === 'object') {
+          errorMsg = error.detail || error.error || error.message || "Error al eliminar montura"
+        }
+        throw new Error(errorMsg)
       }
 
       toast({

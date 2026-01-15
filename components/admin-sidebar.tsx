@@ -67,7 +67,7 @@ export function AdminSidebar() {
 
   return (
     <aside className={cn(
-      "border-r border-border bg-sidebar transition-all duration-300 overflow-hidden",
+      "border-r border-border bg-sidebar transition-all duration-300 overflow-hidden h-[calc(100vh-4rem)]",
       isOpen ? "w-64" : "w-20"
     )}>
       <div className="flex h-full flex-col">

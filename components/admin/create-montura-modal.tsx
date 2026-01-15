@@ -1,8 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
-import { CreateProductData } from "@/src/types/admin-product"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -159,8 +157,9 @@ export function CreateMonturaForm() {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-8 space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div className="flex flex-col h-full space-y-4">
+      <div className="rounded-xl border border-border bg-card p-8 space-y-8 overflow-y-auto flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="nombre">Nombre *</Label>
           <Input
@@ -294,6 +293,7 @@ export function CreateMonturaForm() {
             })
           }}
         />
+      </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">

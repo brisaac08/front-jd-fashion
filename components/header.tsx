@@ -57,23 +57,25 @@ export function Header() {
           </Link>
 
           {/* SEARCH BAR - Desktop */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-4 lg:mx-8 max-w-md">
-            <div className="w-full flex">
-              <input
-                type="text"
-                placeholder="Buscar por marca, nombre..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-l-lg text-sm focus:outline-none focus:border-primary"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-r-lg text-sm hover:bg-secondary/80 transition-colors"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-            </div>
-          </form>
+          {!isAdmin && (
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-4 lg:mx-8 max-w-md">
+              <div className="w-full flex">
+                <input
+                  type="text"
+                  placeholder="Buscar por marca, nombre..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-l-lg text-sm focus:outline-none focus:border-primary"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-r-lg text-sm hover:bg-secondary/80 transition-colors"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
+              </div>
+            </form>
+          )}
 
           {/* ICONS - Right */}
           <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 flex-shrink-0">
