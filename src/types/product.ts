@@ -7,6 +7,7 @@ export interface Product {
   descripcion?: string
   marca_banner?: string
 
+  color?: string
   material?: string
   genero?: string
   estilo?: string

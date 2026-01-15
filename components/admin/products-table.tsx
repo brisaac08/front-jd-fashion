@@ -49,6 +49,7 @@ function EditMonturaModal({
   const [activo, setActivo] = useState(product.activo)
 
   // 🆕 NUEVOS CAMPOS
+  const [color, setColor] = useState(product.color ?? "")
   const [material, setMaterial] = useState(product.material ?? "")
   const [genero, setGenero] = useState(product.genero ?? "")
   const [estilo, setEstilo] = useState(product.estilo ?? "")
@@ -94,6 +95,7 @@ function EditMonturaModal({
       descripcion,
       imagen_url,
       activo,
+      color,
       material,
       genero,
       estilo,
@@ -150,6 +152,11 @@ function EditMonturaModal({
           <div>
             <Label>Stock</Label>
             <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
+          </div>
+
+          <div>
+            <Label>Color</Label>
+            <Input value={color} onChange={(e) => setColor(e.target.value)} />
           </div>
 
           <div>
@@ -225,6 +232,7 @@ function EditMonturaModal({
 ======================= */
 export function ProductsTable({ products }: { readonly products: AdminProduct[] }) {
   const [search, setSearch] = useState("")
+  const [generoFilter, setGeneroFilter] = useState("")
   const [editing, setEditing] = useState<AdminProduct | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null)
@@ -235,7 +243,15 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
     const searchNormalized = normalizeSearch(search)
     const nombreNormalized = normalizeSearch(p.nombre)
     const marcaNormalized = normalizeSearch(p.marca ?? "")
-    return nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
+    const searchMatch = nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
+    
+    // Filtro por genero si se selecciona
+    if (generoFilter) {
+      const generoMatch = p.genero?.toLowerCase().includes(generoFilter.toLowerCase()) ?? false
+      return searchMatch && generoMatch
+    }
+    
+    return searchMatch
   })
 
   async function handleDelete(productId: string) {
@@ -299,6 +315,23 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
         onChange={(e) => setSearch(e.target.value)}
         className="max-w-sm"
       />
+
+      <div className="flex gap-4 items-end">
+        <div>
+          <Label className="text-xs mb-2">Filtrar por Género</Label>
+          <select
+            value={generoFilter}
+            onChange={(e) => setGeneroFilter(e.target.value)}
+            className="px-3 py-2 border border-border rounded-md bg-background text-sm"
+          >
+            <option value="">Todos</option>
+            <option value="Dama">Dama</option>
+            <option value="Caballero">Caballero</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Hombre">Hombre</option>
+          </select>
+        </div>
+      </div>
 
       <table className="w-full border rounded-xl overflow-hidden">
         <thead className="bg-muted">

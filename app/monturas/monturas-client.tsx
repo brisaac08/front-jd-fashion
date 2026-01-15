@@ -1,7 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import Image from "next/image"
+import { useEffect, useState } from "react"
 import { ProductGrid } from "@/components/product-grid"
 import { Product } from "@/src/types/product"
 import { compareNormalized, normalizeSearch } from "@/lib/normalize-filter"
@@ -12,15 +12,17 @@ interface Props {
 
 export default function MonturasClient({ products }: Props) {
   const searchParams = useSearchParams()
+  const [filtrados, setFiltrados] = useState<Product[]>([...products])
+  const [titulo, setTitulo] = useState("Catálogo de Monturas")
 
   const tipo = searchParams.get("tipo")
   const valor = searchParams.get("valor")
   const buscar = searchParams.get("buscar")
 
   console.log("📍 PARÁMETROS RECIBIDOS:", { tipo, valor, buscar })
-  console.log("📍 Todos los params:", Object.fromEntries(searchParams))
 
-  let filtrados = [...products]
+  useEffect(() => {
+    let filtered = [...products]
 
   // 🔹 Filtro de búsqueda por marca y nombre (sin espacios)
   if (buscar) {
@@ -89,27 +91,21 @@ export default function MonturasClient({ products }: Props) {
       return matches
     })
 
-    console.log("🔹 Resultados después del filtro:", filtrados.length)
-  }
+      console.log("🔹 Resultados después del filtro:", filtered.length)
+    }
 
-  // 🔹 Obtener banner de la marca filtrada
-  let marcaBanner: string | undefined
-  if (tipo === "marca" && valor) {
-    const primerProducto = filtrados.find((p) => compareNormalized(p.marca || "", valor))
-    marcaBanner = primerProducto?.marca_banner
-  }
+    setFiltrados(filtered)
 
-  // 🔹 Título dinámico
-  let titulo = "Catálogo de Monturas"
-  let mostrarBanner = false
-  if (buscar) {
-    titulo = `Resultados de búsqueda: "${buscar}"`
-  } else if (tipo && valor) {
-    mostrarBanner = tipo === "marca" && !!marcaBanner
-    titulo = valor
-  }
+    // 🔹 Título dinámico
+    let newTitulo = "Catálogo de Monturas"
+    if (buscar) {
+      newTitulo = `Resultados de búsqueda: "${buscar}"`
+    } else if (tipo && valor) {
+      newTitulo = valor
+    }
 
-  return (
+    setTitulo(newTitulo)
+  }, [tipo, valor, buscar, products])
     <main className="flex flex-col min-h-[calc(100vh-4rem)] w-full">
       <div className="w-full py-8 sm:py-10 md:py-12 bg-linear-to-b from-muted/30 to-background">
         <div className="px-4 sm:px-6 md:px-8 mx-auto w-full">
