@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PriceInput } from "@/components/admin/price-input"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +20,7 @@ import ImageUploadInput from "@/components/admin/image-upload-input"
 import { uploadAdminMonturaImage, updateAdminMontura } from "@/src/services/admin-monturas"
 import { useToast } from "@/hooks/use-toast"
 import { useAdminToken } from "@/hooks/use-admin-token"
+import { formatPrice } from "@/lib/format-price"
 import { Edit, Trash2 } from "lucide-react"
 import { API_URL, API_KEY } from "@/lib/env"
 
@@ -143,7 +145,7 @@ function EditMonturaModal({
 
           <div>
             <Label>Precio</Label>
-            <Input type="number" value={precio} onChange={(e) => setPrecio(+e.target.value)} />
+            <PriceInput value={precio} onChange={setPrecio} />
           </div>
 
           <div>
@@ -337,7 +339,7 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
               </td>
 
               <td className="p-4 text-center text-sm">{p.marca ?? "-"}</td>
-              <td className="p-4 text-center text-sm font-semibold">${p.precio}</td>
+              <td className="p-4 text-center text-sm font-semibold">${formatPrice(p.precio)}</td>
               <td className="p-4 text-center text-sm">{p.stock ?? "-"}</td>
               <td className="p-4 text-center text-sm">{p.color ?? "-"}</td>
               <td className="p-4 text-center text-sm">{p.material ?? "-"}</td>

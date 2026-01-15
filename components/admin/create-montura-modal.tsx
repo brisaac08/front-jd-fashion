@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { PriceInput } from "@/components/admin/price-input"
 import ImageUploadInput from "@/components/admin/image-upload-input"
 import { useToast } from "@/hooks/use-toast"
 import { useAdminToken } from "@/hooks/use-admin-token"
@@ -180,13 +181,10 @@ export function CreateMonturaForm() {
 
         <div>
           <Label htmlFor="precio">Precio *</Label>
-          <Input
+          <PriceInput
             id="precio"
-            type="number"
-            step="0.01"
             value={precio}
-            onChange={(e) => setPrecio(+e.target.value)}
-            placeholder="0.00"
+            onChange={setPrecio}
           />
         </div>
 
