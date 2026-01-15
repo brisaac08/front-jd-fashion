@@ -10,7 +10,7 @@ export function WhatsappFloatingButton() {
     return null
   }
 
-  const phoneNumber = "573245704999"
+  const phoneNumber = "573246718202"
   const message = "Hola 👋, tengo una consulta sobre sus productos"
   const encodedMessage = encodeURIComponent(message)
 

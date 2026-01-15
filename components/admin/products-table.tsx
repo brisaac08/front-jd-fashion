@@ -21,6 +21,7 @@ import { uploadAdminMonturaImage, updateAdminMontura } from "@/src/services/admi
 import { useToast } from "@/hooks/use-toast"
 import { useAdminToken } from "@/hooks/use-admin-token"
 import { formatPrice } from "@/lib/format-price"
+import { normalizeSearch } from "@/lib/normalize-filter"
 import { Edit, Trash2 } from "lucide-react"
 import { API_URL, API_KEY } from "@/lib/env"
 
@@ -48,7 +49,6 @@ function EditMonturaModal({
   const [activo, setActivo] = useState(product.activo)
 
   // 🆕 NUEVOS CAMPOS
-  const [color, setColor] = useState(product.color ?? "")
   const [material, setMaterial] = useState(product.material ?? "")
   const [genero, setGenero] = useState(product.genero ?? "")
   const [estilo, setEstilo] = useState(product.estilo ?? "")
@@ -94,7 +94,6 @@ function EditMonturaModal({
       descripcion,
       imagen_url,
       activo,
-      color,
       material,
       genero,
       estilo,
@@ -151,11 +150,6 @@ function EditMonturaModal({
           <div>
             <Label>Stock</Label>
             <Input type="number" value={stock} onChange={(e) => setStock(+e.target.value)} />
-          </div>
-
-          <div>
-            <Label>Color</Label>
-            <Input value={color} onChange={(e) => setColor(e.target.value)} />
           </div>
 
           <div>
@@ -237,9 +231,12 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
   const { toast } = useToast()
   const { token } = useAdminToken()
 
-  const filtered = products.filter((p) =>
-    `${p.nombre} ${p.marca ?? ""}`.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = products.filter((p) => {
+    const searchNormalized = normalizeSearch(search)
+    const nombreNormalized = normalizeSearch(p.nombre)
+    const marcaNormalized = normalizeSearch(p.marca ?? "")
+    return nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
+  })
 
   async function handleDelete(productId: string) {
     if (!token) {

@@ -1,13 +1,20 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
 import { ChevronDown } from "lucide-react"
 import { categories } from "@/lib/categories"
 
 export function CategoriesMenu() {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleNavigate = (url: string) => {
+    console.log("🔗 NAVEGANDO A:", url)
+    setOpen(false)
+    setTimeout(() => {
+      window.location.href = url
+    }, 100)
+  }
 
   // Cerrar al presionar Escape
   useEffect(() => {
@@ -65,14 +72,13 @@ export function CategoriesMenu() {
               </h4>
 
               {categories.principales.items.map((item) => (
-                <Link
+                <button
                   key={item}
-                  href="/monturas"
-                  onClick={() => setOpen(false)}
-                  className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+                  onClick={() => handleNavigate(`/monturas?tipo=genero&valor=${encodeURIComponent(item)}`)}
+                  className="block w-full text-left py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {item}
-                </Link>
+                </button>
               ))}
             </div>
 
@@ -84,14 +90,13 @@ export function CategoriesMenu() {
                 </h4>
 
                 {group.items.map((item) => (
-                  <Link
+                  <button
                     key={item}
-                    href={`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`}
-                    onClick={() => setOpen(false)}
-                    className="block py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => handleNavigate(`/monturas?tipo=${group.key}&valor=${encodeURIComponent(item)}`)}
+                    className="block w-full text-left py-1 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {item}
-                  </Link>
+                  </button>
                 ))}
               </div>
             ))}

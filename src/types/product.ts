@@ -5,8 +5,8 @@ export interface Product {
   precio: number
   imagen_url?: string
   descripcion?: string
+  marca_banner?: string
 
-  color?: string
   material?: string
   genero?: string
   estilo?: string

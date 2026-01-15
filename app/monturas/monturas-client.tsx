@@ -1,8 +1,10 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { ProductGrid } from "@/components/product-grid"
 import { Product } from "@/src/types/product"
+import { compareNormalized, normalizeSearch } from "@/lib/normalize-filter"
 
 interface Props {
   readonly products: readonly Product[]
@@ -15,30 +17,95 @@ export default function MonturasClient({ products }: Props) {
   const valor = searchParams.get("valor")
   const buscar = searchParams.get("buscar")
 
+  console.log("📍 PARÁMETROS RECIBIDOS:", { tipo, valor, buscar })
+  console.log("📍 Todos los params:", Object.fromEntries(searchParams))
+
   let filtrados = [...products]
 
-  // 🔹 Filtro de búsqueda por marca y nombre
+  // 🔹 Filtro de búsqueda por marca y nombre (sin espacios)
   if (buscar) {
-    const searchLower = buscar.toLowerCase()
-    filtrados = filtrados.filter(
-      (p) =>
-        p.nombre?.toLowerCase().includes(searchLower) ||
-        p.marca?.toLowerCase().includes(searchLower)
-    )
+    const searchNormalized = normalizeSearch(buscar)
+    filtrados = filtrados.filter((p) => {
+      const nombreNormalized = normalizeSearch(p.nombre || "")
+      const marcaNormalized = normalizeSearch(p.marca || "")
+      return nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
+    })
   }
 
-  // 🔹 Filtro SOLO por marca
+  // 🔹 Filtro por tipo (estilo, material, forma, genero, tipo)
+  if (tipo && valor) {
+    console.log("🔹 Filtrando por:", { tipo, valor, totalProductos: filtrados.length })
+    
+    filtrados = filtrados.filter((p) => {
+      // 🔹 Caso especial para "Sol" - buscar por patrón " - S" en el nombre
+      if (compareNormalized(valor, "Sol")) {
+        const esSol = p.nombre?.includes(" - S") || p.nombre?.includes("-S")
+        if (esSol) console.log("✅ Sol encontrado:", p.nombre)
+        return esSol
+      }
+
+      // 🔹 Caso especial para "Damas" - buscar en genero o fallback por nombre
+      if (compareNormalized(valor, "Damas")) {
+        const tieneGenero = p.genero && compareNormalized(p.genero, "Damas")
+        if (tieneGenero) {
+          console.log("✅ Dama por genero:", p.nombre, "genero:", p.genero)
+          return true
+        }
+        return false
+      }
+
+      // 🔹 Caso especial para "Caballeros" - buscar en genero o fallback por nombre
+      if (compareNormalized(valor, "Caballeros")) {
+        const tieneGenero = p.genero && compareNormalized(p.genero, "Caballeros")
+        if (tieneGenero) {
+          console.log("✅ Caballero por genero:", p.nombre, "genero:", p.genero)
+          return true
+        }
+        return false
+      }
+
+      // 🔹 Para otros filtros (marca, estilo, material, forma, tipo, genero)
+      const fieldValue =
+        tipo === "marca"
+          ? p.marca
+          : tipo === "estilo"
+            ? p.estilo
+            : tipo === "material"
+              ? p.material
+              : tipo === "forma"
+                ? p.forma
+                : tipo === "genero"
+                  ? p.genero
+                  : tipo === "tipo"
+                    ? p.tipo
+                    : undefined
+
+      if (!fieldValue) {
+        console.log(`❌ Campo ${tipo} vacío para producto:`, p.nombre)
+        return false
+      }
+      const matches = compareNormalized(fieldValue, valor)
+      if (matches) console.log(`✅ Comparando ${tipo}: "${fieldValue}" vs "${valor}" = ${matches}`)
+      return matches
+    })
+
+    console.log("🔹 Resultados después del filtro:", filtrados.length)
+  }
+
+  // 🔹 Obtener banner de la marca filtrada
+  let marcaBanner: string | undefined
   if (tipo === "marca" && valor) {
-    filtrados = filtrados.filter(
-      (p) => p.marca?.toLowerCase() === valor.toLowerCase()
-    )
+    const primerProducto = filtrados.find((p) => compareNormalized(p.marca || "", valor))
+    marcaBanner = primerProducto?.marca_banner
   }
 
   // 🔹 Título dinámico
   let titulo = "Catálogo de Monturas"
+  let mostrarBanner = false
   if (buscar) {
     titulo = `Resultados de búsqueda: "${buscar}"`
-  } else if (tipo === "marca" && valor) {
+  } else if (tipo && valor) {
+    mostrarBanner = tipo === "marca" && !!marcaBanner
     titulo = valor
   }
 
