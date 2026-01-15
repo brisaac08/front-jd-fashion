@@ -63,6 +63,7 @@ export const categories = {
         "Rectangular",
         "Aviador",
         "Cat Eye",
+        "Hexagonal",
       ],
     },
   ],

@@ -18,6 +18,7 @@ export function monturaToProduct(m: Montura): CartProduct {
     precio: m.precio,
     imagen_url: m.imagen_url || "/placeholder.svg",
     descripcion: m.descripcion ?? undefined,
+    color: m.color ?? undefined,
     material: m.material ?? undefined,
     genero: m.genero ?? undefined,
     estilo: m.estilo ?? undefined,
