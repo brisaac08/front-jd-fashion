@@ -7,11 +7,20 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import ImageUploadInput from "@/components/admin/image-upload-input"
 import { uploadAdminMonturaImage, updateAdminMontura } from "@/src/services/admin-monturas"
 import { useToast } from "@/hooks/use-toast"
 import { useAdminToken } from "@/hooks/use-admin-token"
 import { Edit, Trash2 } from "lucide-react"
+import { API_URL, API_KEY } from "@/lib/env"
 
 /* =======================
    MODAL DE EDICIÓN
@@ -221,14 +230,69 @@ function EditMonturaModal({
 export function ProductsTable({ products }: { readonly products: AdminProduct[] }) {
   const [search, setSearch] = useState("")
   const [editing, setEditing] = useState<AdminProduct | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null)
+  const { toast } = useToast()
+  const { token } = useAdminToken()
 
   const filtered = products.filter((p) =>
     `${p.nombre} ${p.marca ?? ""}`.toLowerCase().includes(search.toLowerCase())
   )
 
+  async function handleDelete(productId: string) {
+    if (!token) {
+      toast({
+        title: "Error de autenticación",
+        description: "No se encontró el token de autenticación",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setDeleting(productId)
+    try {
+      const res = await fetch(`${API_URL}/admin/monturas/${productId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": API_KEY ?? "",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.detail || error.error || "Error al eliminar montura")
+      }
+
+      toast({
+        title: "Montura eliminada",
+        description: "La montura fue eliminada correctamente.",
+      })
+
+      // Reload the page to refresh the list
+      globalThis.location.reload()
+    } catch (err) {
+      console.error(err)
+      toast({
+        title: "Error al eliminar",
+        description: String(err),
+        variant: "destructive",
+      })
+    } finally {
+      setDeleting(null)
+      setDeleteConfirm(null)
+    }
+  }
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Inventario de Monturas</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Inventario de Monturas</h1>
+        <Button asChild>
+          <a href="/admin/agregar-montura">Crear Nueva Montura</a>
+        </Button>
+      </div>
 
       <Input
         placeholder="Buscar por nombre o marca..."
@@ -288,7 +352,13 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
                 <Button size="icon" variant="ghost" onClick={() => setEditing(p)}>
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button size="icon" variant="ghost">
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  onClick={() => setDeleteConfirm({ id: p.id, name: p.nombre })}
+                  disabled={deleting === p.id}
+                  className="text-destructive hover:text-destructive"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </td>
@@ -304,6 +374,27 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
           onUpdated={() => globalThis.location.reload()}
         />
       )}
+
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogTitle>Eliminar Montura</AlertDialogTitle>
+          <AlertDialogDescription>
+            ¿Estás seguro de que deseas eliminar la montura "{deleteConfirm?.name}"? Esta acción no se puede deshacer.
+          </AlertDialogDescription>
+          <div className="flex justify-end gap-2">
+            <AlertDialogCancel disabled={deleting === deleteConfirm?.id}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteConfirm && handleDelete(deleteConfirm.id)}
+              disabled={deleting === deleteConfirm?.id}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {deleting === deleteConfirm?.id ? "Eliminando..." : "Eliminar"}
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

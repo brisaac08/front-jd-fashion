@@ -21,10 +21,13 @@ export async function getAdminMonturas(): Promise<AdminProduct[]> {
 }
 
 
+
 /* =======================
    CREAR NUEVA MONTURA
 ======================= */
 export async function createAdminMontura(data: CreateProductData): Promise<AdminProduct> {
+  // Esta función ahora es un wrapper, pero el componente envía FormData directamente
+  // Se mantiene por compatibilidad
   const res = await fetch(`${API_URL}/admin/monturas`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "api-key": API_KEY ?? "" },
@@ -38,6 +41,7 @@ export async function createAdminMontura(data: CreateProductData): Promise<Admin
 
   return res.json()
 }
+
 
 
 

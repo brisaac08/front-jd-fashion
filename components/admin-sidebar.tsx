@@ -10,6 +10,7 @@ import {
   Users,
   Menu,
   LogOut,
+  Eye,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -27,9 +28,15 @@ const menuItems = [
   },
 
   {
+    icon: Eye,
+    label: "Inactivos",
+    href: "/admin/inactivos",
+  },
+
+  {
     icon: PlusCircle,
     label: "Agregar montura",
-    href: "/admin/agregar-producto",
+    href: "/admin/agregar-montura",
   },
 
   // futuros (no visibles)
