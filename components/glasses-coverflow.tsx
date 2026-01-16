@@ -18,6 +18,14 @@ interface GlassesCoverflowProps {
 
 export function GlassesCoverflow({ slides }: Readonly<GlassesCoverflowProps>) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index)
@@ -30,6 +38,12 @@ export function GlassesCoverflow({ slides }: Readonly<GlassesCoverflowProps>) {
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length)
   }
+
+  // Valores responsivos
+  const slideSpacing = isMobile ? 200 : 380
+  const rotateDeg = isMobile ? -20 : -30
+  const translateZ = isMobile ? -200 : -300
+  const maxImageWidth = isMobile ? 280 : 420
 
   const getSlideStyle = (index: number) => {
     // Calcular diferencia circular (para efecto infinito)
@@ -44,7 +58,7 @@ export function GlassesCoverflow({ slides }: Readonly<GlassesCoverflowProps>) {
     
     const isActive = diff === 0
 
-    let transform = `translateX(${diff * 380}px) translateZ(${isActive ? 0 : -300}px) rotateY(${diff * -30}deg)`
+    let transform = `translateX(${diff * slideSpacing}px) translateZ(${isActive ? 0 : translateZ}px) rotateY(${diff * rotateDeg}deg)`
     let opacity = 1 - Math.abs(diff) * 0.25
     let zIndex = 10 - Math.abs(diff)
 
@@ -79,7 +93,7 @@ export function GlassesCoverflow({ slides }: Readonly<GlassesCoverflowProps>) {
                 style={{
                   ...getSlideStyle(index),
                   width: '100%',
-                  maxWidth: '420px',
+                  maxWidth: `${maxImageWidth}px`,
                   height: 'auto',
                 } as React.CSSProperties}
                 aria-label={`Ver ${slide.title}`}
