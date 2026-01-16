@@ -6,6 +6,7 @@ import { AdminProduct } from "@/src/types/admin-product"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { PriceInput } from "@/components/admin/price-input"
 import {
   AlertDialog,
