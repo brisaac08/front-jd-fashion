@@ -44,7 +44,7 @@ function EditMonturaModal({
   const [precio, setPrecio] = useState(product.precio)
   const [stock, setStock] = useState(product.stock ?? 0)
   const [descripcion, setDescripcion] = useState(product.descripcion ?? "")
-  const [imagen_url, setImagenUrl] = useState(product.imagen_url ?? "")
+  const [imagenUrl, setImagenUrl] = useState(product.imagen_url ?? "")
   const [activo, setActivo] = useState(product.activo)
 
   // 🆕 NUEVOS CAMPOS
@@ -68,7 +68,7 @@ function EditMonturaModal({
       return
     }
 
-    if (!imagen_url) {
+    if (!imagenUrl) {
       toast({
         title: "Imagen requerida",
         description: "Debes subir una imagen antes de guardar",
@@ -92,7 +92,7 @@ function EditMonturaModal({
       precio,
       stock,
       descripcion,
-      imagen_url,
+      imagen_url: imagenUrl,
       activo,
       color,
       material,
@@ -195,7 +195,7 @@ function EditMonturaModal({
         <div>
           <Label>Imagen</Label>
           <ImageUploadInput
-            initialUrl={imagen_url || null}
+            initialUrl={imagenUrl || null}
             uploadFn={async (file) => {
               try {
                 setUploading(true)
@@ -325,7 +325,7 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
         <tbody>
           {filtered.map((p) => (
             <tr key={p.id} className="border-t">
-              <td className="p-4 flex items-center gap-2 min-w-[250px]">
+              <td className="p-4 flex items-center gap-2 min-w-62.5">
                 <Image
                   src={p.imagen_url || "/placeholder.svg"}
                   alt={p.nombre}
