@@ -1,7 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Plus, MessageCircle } from "lucide-react"
+import { Plus } from "lucide-react"
+import Image from "next/image"
 import { useCart } from "@/components/cart-provider"
 import { useToast } from "@/hooks/use-toast"
 import { getProductWhatsappLink } from "@/lib/whatsapp"
@@ -45,9 +46,15 @@ export function MonturasDetailActions({ product }: MonturasDetailActionsProps) {
       >
         <Button 
           variant="outline"
-          className="w-full gap-2 h-12 text-base border-green-500 text-green-600 hover:bg-green-50"
+          className="w-full gap-2 h-12 text-base border-green-500 text-green-600 hover:bg-green-50 flex items-center justify-center"
         >
-          <MessageCircle className="h-5 w-5" />
+          <Image
+            src="/whatsapp-3.svg"
+            alt="WhatsApp"
+            width={24}
+            height={24}
+            className="flex-shrink-0"
+          />
           Consultar por WhatsApp
         </Button>
       </a>
