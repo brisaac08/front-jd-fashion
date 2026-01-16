@@ -86,14 +86,17 @@ export default function PublicidadPage() {
                 rel="noopener noreferrer"
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                <Image
-                  src="/whatsapp-3.svg"
-                  alt="WhatsApp"
-                  width={24}
-                  height={24}
-                  className="flex-shrink-0"
-                />
-                Contactar por WhatsApp
+                <span className="flex items-center justify-center">
+                  <Image
+                    src="/whatsapp-3.svg"
+                    alt="WhatsApp"
+                    width={22}
+                    height={22}
+                    className="object-contain"
+                    style={{ display: 'block' }}
+                  />
+                </span>
+                <span className="flex items-center">Contactar por WhatsApp</span>
               </a>
             </div>
           </div>

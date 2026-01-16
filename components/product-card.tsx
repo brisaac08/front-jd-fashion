@@ -95,16 +95,19 @@ export function ProductCard({ product }: { readonly product: Product }) {
         >
           <Button
             variant="outline"
-            className="w-full gap-2 border-green-500 text-green-600 hover:bg-green-50 flex items-center justify-center"
+            className="w-full border-green-500 text-green-600 hover:bg-green-50 flex items-center justify-center gap-2"
           >
-            <Image
-              src="/whatsapp-3.svg"
-              alt="WhatsApp"
-              width={20}
-              height={20}
-              className="flex-shrink-0"
-            />
-            Consultar por WhatsApp
+            <span className="flex items-center justify-center">
+              <Image
+                src="/whatsapp-3.svg"
+                alt="WhatsApp"
+                width={22}
+                height={22}
+                className="object-contain"
+                style={{ display: 'block' }}
+              />
+            </span>
+            <span className="flex items-center">Consultar por WhatsApp</span>
           </Button>
         </a>
       </CardFooter>
