@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { GlassesCoverflow } from "./glasses-coverflow"
 
 interface Slide {
@@ -33,12 +34,23 @@ export function StoriesFeed() {
   }, [])
 
   if (loading) {
-    return <div className="h-150 bg-slate-100 animate-pulse" />
+      return <div className="h-150 bg-slate-100 animate-pulse" />
   }
 
   if (!slides.length) {
     return null
   }
 
-  return <GlassesCoverflow slides={slides} />
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 1.0, ease: "easeOut" }}
+        >
+          <GlassesCoverflow slides={slides} />
+        </motion.div>
+      </AnimatePresence>
+    )
 }
