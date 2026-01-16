@@ -11,7 +11,7 @@ export function AdminProfileMenu() {
     try {
       const res = await fetch("/api/admin/logout", { method: "POST" })
       if (res.ok) {
-        router.push("/admin")
+        router.push("/login")
       }
     } catch (err) {
       console.error("Error logging out:", err)
