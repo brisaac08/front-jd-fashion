@@ -6,12 +6,12 @@ export function LoadingGlasses() {
     <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50">
       <div className="flex flex-col items-center gap-8">
         {/* Load logo con efecto shimmer */}
-        <div className="relative w-56 h-56 sm:w-72 sm:h-72">
+        <div className="relative w-72 h-72 sm:w-96 sm:h-96">
           <Image
             src="/load-logo.png"
             alt="Cargando"
-            width={288}
-            height={288}
+            width={384}
+            height={384}
             className="w-full h-full object-contain filter drop-shadow-lg"
             priority
           />
