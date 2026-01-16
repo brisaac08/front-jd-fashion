@@ -14,7 +14,7 @@ export async function GET() {
     const publicidadFiles = files
       .filter((file) => file.toLowerCase().startsWith("publicidad-"))
       .filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file))
-      .sort()
+      .sort((a, b) => a.localeCompare(b))
     
     // Transformar a slides con formato consistente
     const slides = publicidadFiles.map((filename) => {
