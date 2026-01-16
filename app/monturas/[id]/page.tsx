@@ -118,6 +118,46 @@ export default async function MonturasDetallePage({ params }: { readonly params:
                 </div>
               )}
 
+              {/* Información Adicional */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+                {montura.color && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Color</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.color}</p>
+                  </div>
+                )}
+                {montura.material && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Material</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.material}</p>
+                  </div>
+                )}
+                {montura.genero && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Género</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.genero}</p>
+                  </div>
+                )}
+                {montura.estilo && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Estilo</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.estilo}</p>
+                  </div>
+                )}
+                {montura.tipo && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tipo</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.tipo}</p>
+                  </div>
+                )}
+                {montura.forma && (
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Forma</p>
+                    <p className="text-sm text-gray-700 mt-1">{montura.forma}</p>
+                  </div>
+                )}
+              </div>
+
               {/* Acciones */}
               <MonturasDetailActions product={product} />
             </div>

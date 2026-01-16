@@ -4,10 +4,11 @@ import { useState, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Info, User, Heart, ShoppingCart, Menu, X, Grid, Search } from "lucide-react"
+import { Info, User, Heart, ShoppingCart, Menu, X, Grid, Search, ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { AdminProfileMenu } from "@/components/admin-profile-menu"
 import { useCart } from "@/components/cart-provider"
 import { useFavorites } from "@/components/favorites-provider"
 import { categories } from "@/lib/categories"
@@ -25,8 +26,9 @@ export function Header() {
   const router = useRouter()
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
   
-  // Hide header icons if in admin
+  // Hide header icons if in admin or login
   const isAdmin = pathname?.startsWith("/admin")
+  const isLogin = pathname === "/login"
 
   // 🔹 Cargar productos al montar el componente
   useEffect(() => {
@@ -132,71 +134,83 @@ export function Header() {
             />
           </Link>
 
-          {/* SEARCH BAR - Desktop */}
-          {!isAdmin && (
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-4 lg:mx-8 max-w-md">
-              <div className="w-full flex">
-                <input
-                  type="text"
-                  placeholder="Buscar por marca, nombre..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-l-lg text-sm focus:outline-none focus:border-primary"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-r-lg text-sm hover:bg-secondary/80 transition-colors"
-                >
-                  <Search className="h-4 w-4" />
-                </button>
-              </div>
-            </form>
-          )}
+          {/* Login Page - Simplified Header */}
+          {isLogin ? (
+            <Button
+              onClick={() => router.push("/")}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Volver
+            </Button>
+          ) : (
+            <>
+              {/* SEARCH BAR - Desktop */}
+              {!isAdmin && (
+                <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-4 lg:mx-8 max-w-md">
+                  <div className="w-full flex">
+                    <input
+                      type="text"
+                      placeholder="Buscar por marca, nombre..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-l-lg text-sm focus:outline-none focus:border-primary"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-secondary text-secondary-foreground rounded-r-lg text-sm hover:bg-secondary/80 transition-colors"
+                    >
+                      <Search className="h-4 w-4" />
+                    </button>
+                  </div>
+                </form>
+              )}
 
-          {/* ICONS - Right */}
-          <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 shrink-0">
-            {!isAdmin && (
-              <>
-                {/* Search Mobile Icon */}
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setSearchOpen(!searchOpen)}
-                  className="md:hidden h-9 w-9"
-                  title="Buscar"
-                >
-                  {searchOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Search className="h-5 w-5" />
-                  )}
-                </Button>
+              {/* ICONS - Right */}
+              <div className="flex items-center gap-0.5 sm:gap-1 md:gap-2 shrink-0">
+                {!isAdmin && (
+                  <>
+                    {/* Search Mobile Icon */}
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => setSearchOpen(!searchOpen)}
+                      className="md:hidden h-9 w-9"
+                      title="Buscar"
+                    >
+                      {searchOpen ? (
+                        <X className="h-5 w-5" />
+                      ) : (
+                        <Search className="h-5 w-5" />
+                      )}
+                    </Button>
 
-                {/* Info */}
-                <Link href="/about" title="Sobre nosotros" className="hidden sm:block">
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Info className="h-5 w-5" />
-                  </Button>
-                </Link>
+                    {/* Info */}
+                    <Link href="/about" title="Sobre nosotros" className="hidden sm:block">
+                      <Button variant="ghost" size="icon" className="h-9 w-9">
+                        <Info className="h-5 w-5" />
+                      </Button>
+                    </Link>
 
-                {/* User/Login */}
-                <Link href="/login" title="Mi cuenta" className="hidden sm:block">
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </Link>
+                    {/* User/Login */}
+                    <Link href="/login" title="Mi cuenta" className="hidden sm:block">
+                      <Button variant="ghost" size="icon" className="h-9 w-9">
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </Link>
 
-                {/* Favorites */}
-                <Link href="/favoritos" className="relative" title="Mis favoritos">
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Heart className="h-5 w-5" />
-                    {favorites.length > 0 && (
-                      <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
-                        {favorites.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </Link>
+                    {/* Favorites */}
+                    <Link href="/favoritos" className="relative" title="Mis favoritos">
+                      <Button variant="ghost" size="icon" className="h-9 w-9">
+                        <Heart className="h-5 w-5" />
+                        {favorites.length > 0 && (
+                          <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
+                            {favorites.length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </Link>
 
                 {/* Shopping Cart */}
                 <Link href="/carrito" className="relative" title="Carrito">
@@ -219,20 +233,27 @@ export function Header() {
               </>
             )}
 
-            {/* Menu Hamburguesa */}
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="h-9 w-9"
-            >
-              {menuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </Button>
+            {/* Admin Profile Menu */}
+            {isAdmin && <AdminProfileMenu />}
+
+            {/* Menu Hamburguesa - Solo para no-admin */}
+            {!isAdmin && (
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="h-9 w-9"
+              >
+                {menuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </Button>
+            )}
           </div>
+            </>
+          )}
 
         </div>
 

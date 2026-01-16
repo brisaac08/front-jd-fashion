@@ -6,7 +6,6 @@ import { AdminProduct } from "@/src/types/admin-product"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PriceInput } from "@/components/admin/price-input"
 import {
   AlertDialog,
@@ -230,7 +229,6 @@ function EditMonturaModal({
 ======================= */
 export function ProductsTable({ products }: { readonly products: AdminProduct[] }) {
   const [search, setSearch] = useState("")
-  const [generoFilter, setGeneroFilter] = useState("")
   const [editing, setEditing] = useState<AdminProduct | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null)
@@ -241,15 +239,7 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
     const searchNormalized = normalizeSearch(search)
     const nombreNormalized = normalizeSearch(p.nombre)
     const marcaNormalized = normalizeSearch(p.marca ?? "")
-    const searchMatch = nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
-    
-    // Filtro por genero si se selecciona
-    if (generoFilter) {
-      const generoMatch = p.genero?.toLowerCase().includes(generoFilter.toLowerCase()) ?? false
-      return searchMatch && generoMatch
-    }
-    
-    return searchMatch
+    return nombreNormalized.includes(searchNormalized) || marcaNormalized.includes(searchNormalized)
   })
 
   async function handleDelete(productId: string) {
@@ -313,23 +303,6 @@ export function ProductsTable({ products }: { readonly products: AdminProduct[] 
         onChange={(e) => setSearch(e.target.value)}
         className="max-w-sm"
       />
-
-      <div className="flex gap-4 items-end">
-        <div>
-          <Label className="text-xs mb-2">Filtrar por Género</Label>
-          <select
-            value={generoFilter}
-            onChange={(e) => setGeneroFilter(e.target.value)}
-            className="px-3 py-2 border border-border rounded-md bg-background text-sm"
-          >
-            <option value="">Todos</option>
-            <option value="Dama">Dama</option>
-            <option value="Caballero">Caballero</option>
-            <option value="Mujer">Mujer</option>
-            <option value="Hombre">Hombre</option>
-          </select>
-        </div>
-      </div>
 
       <table className="w-full border rounded-xl overflow-hidden">
         <thead className="bg-muted">
