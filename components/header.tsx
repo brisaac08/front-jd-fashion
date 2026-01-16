@@ -12,8 +12,6 @@ import { AdminProfileMenu } from "@/components/admin-profile-menu"
 import { useCart } from "@/components/cart-provider"
 import { useFavorites } from "@/components/favorites-provider"
 import { categories } from "@/lib/categories"
-import { compareNormalized } from "@/lib/normalize-filter"
-import { Product } from "@/src/types/product"
 
 export function Header() {
   const { items } = useCart()
@@ -21,7 +19,6 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [products, setProducts] = useState<Product[]>([])
   const pathname = usePathname()
   const router = useRouter()
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
@@ -29,79 +26,6 @@ export function Header() {
   // Hide header icons if in admin or login
   const isAdmin = pathname?.startsWith("/admin")
   const isLogin = pathname === "/login"
-
-  // 🔹 Cargar productos al montar el componente
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const res = await fetch("/api/admin/monturas")
-        if (!res.ok) return
-        const monturas = await res.json()
-        const filtered = monturas
-          .filter((m: any) => m.activo)
-          .filter((m: any) => m.imagen_url || m.precio)
-          .map((m: any) => ({
-            id: m.id,
-            nombre: m.nombre,
-            marca: m.marca,
-            precio: m.precio,
-            imagen_url: m.imagen_url || "/placeholder.svg",
-            descripcion: m.descripcion,
-            color: m.color,
-            material: m.material,
-            genero: m.genero,
-            estilo: m.estilo,
-            tipo: m.tipo,
-            forma: m.forma,
-          }))
-        setProducts(filtered)
-      } catch (err) {
-        console.error("Error loading products:", err)
-      }
-    }
-
-    loadProducts()
-  }, [])
-
-  // 🔹 Función para verificar si un filtro tiene productos disponibles
-  const hasProducts = (filterType: string, filterValue: string): boolean => {
-    if (!products || products.length === 0) return true
-
-    return products.some((p) => {
-      // Caso especial para "Sol"
-      if (compareNormalized(filterValue, "Sol")) {
-        return p.nombre?.includes(" - S") || p.nombre?.includes("-S")
-      }
-
-      // Caso especial para "Dama"
-      if (compareNormalized(filterValue, "Dama")) {
-        return p.genero && compareNormalized(p.genero, "Dama")
-      }
-
-      // Caso especial para "Caballero"
-      if (compareNormalized(filterValue, "Caballero")) {
-        return p.genero && compareNormalized(p.genero, "Caballero")
-      }
-
-      // Para otros filtros
-      let fieldValue: string | undefined | null = null
-      
-      if (filterType === "marca") fieldValue = p.marca
-      else if (filterType === "estilo") fieldValue = p.estilo
-      else if (filterType === "material") fieldValue = p.material
-      else if (filterType === "forma") fieldValue = p.forma
-      else if (filterType === "genero") fieldValue = p.genero
-      else if (filterType === "tipo") fieldValue = p.tipo
-
-      return fieldValue ? compareNormalized(fieldValue, filterValue) : false
-    })
-  }
-
-  // 🔹 Función para verificar si una categoría tiene al menos un item disponible
-  const hasCategoryProducts = (items: string[], filterType: string): boolean => {
-    if (!products || products.length === 0) return true
-    return items.some((item) => hasProducts(filterType, item))
-  }
 
   useEffect(() => {
     setMenuOpen(false)
@@ -291,7 +215,6 @@ export function Header() {
                   {categories.principales.title}
                 </h4>
                 {categories.principales.items
-                  .filter((item) => hasProducts("genero", item))
                   .map((item) => (
                     <Link
                       key={item}
@@ -306,14 +229,12 @@ export function Header() {
 
               {/* GRUPOS */}
               {categories.grupos
-                .filter((group) => hasCategoryProducts(group.items, group.key))
                 .map((group) => (
                   <div key={group.key}>
                     <h4 className="mb-3 font-semibold text-sm sm:text-base">
                       {group.title}
                     </h4>
                     {group.items
-                      .filter((item) => hasProducts(group.key, item))
                       .map((item) => (
                         <Link
                           key={item}
