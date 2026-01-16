@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import {
   Home,
@@ -9,7 +9,6 @@ import {
   PlusCircle,
   Users,
   Menu,
-  LogOut,
   Eye,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -50,20 +49,7 @@ const menuItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
   const [isOpen, setIsOpen] = useState(true)
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/admin/logout", {
-        method: "POST",
-      })
-    } catch (error) {
-      console.error("Error logging out:", error)
-    } finally {
-      router.push("/login")
-    }
-  }
 
   return (
     <aside className={cn(
@@ -118,19 +104,6 @@ export function AdminSidebar() {
               )
             })}
         </nav>
-
-        {/* Logout Button - Hidden when collapsed */}
-        {isOpen && (
-          <div className="border-t p-4">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-red-50 text-red-600 transition-colors"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        )}
       </div>
     </aside>
   )
