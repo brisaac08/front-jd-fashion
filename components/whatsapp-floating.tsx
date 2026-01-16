@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 
 export function WhatsappFloatingButton() {
   const pathname = usePathname()
@@ -30,7 +31,14 @@ export function WhatsappFloatingButton() {
         hover:scale-110 hover:bg-green-600
       "
     >
-      <span className="text-2xl">💬</span>
+      <Image
+        src="/whatsapp-3.svg"
+        alt="WhatsApp"
+        width={32}
+        height={32}
+        priority
+        className="flex-shrink-0"
+      />
     </a>
   )
 }

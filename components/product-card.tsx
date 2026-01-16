@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MessageCircle, Heart } from "lucide-react"
+import { Heart } from "lucide-react"
 import { getProductWhatsappLink } from "@/lib/whatsapp"
 import { formatPrice } from "@/lib/format-price"
 import { formatGender } from "@/lib/format-gender"
@@ -95,9 +95,15 @@ export function ProductCard({ product }: { readonly product: Product }) {
         >
           <Button
             variant="outline"
-            className="w-full gap-2 border-green-500 text-green-600 hover:bg-green-50"
+            className="w-full gap-2 border-green-500 text-green-600 hover:bg-green-50 flex items-center justify-center"
           >
-            <MessageCircle className="h-4 w-4" />
+            <Image
+              src="/whatsapp-3.svg"
+              alt="WhatsApp"
+              width={20}
+              height={20}
+              className="flex-shrink-0"
+            />
             Consultar por WhatsApp
           </Button>
         </a>

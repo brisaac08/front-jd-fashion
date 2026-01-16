@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, MessageCircle } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getCarouselInfo } from "@/lib/carousel-info"
 
@@ -86,7 +86,13 @@ export default function PublicidadPage() {
                 rel="noopener noreferrer"
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                <MessageCircle className="w-5 h-5" />
+                <Image
+                  src="/whatsapp-3.svg"
+                  alt="WhatsApp"
+                  width={24}
+                  height={24}
+                  className="flex-shrink-0"
+                />
                 Contactar por WhatsApp
               </a>
             </div>
