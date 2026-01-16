@@ -75,14 +75,13 @@ export function CartPage() {
 
     items.forEach((item) => {
       const price = item.price || 0
-      message += `\n📷 ${item.name}\n`
-      message += `Referencia: ${item.id}\n`
+      message += `\n*${item.name}*\n`
+      message += `Referencia: ${item.quantity}\n`
       message += `Cantidad: ${item.quantity}\n`
       message += `Precio unitario: $${price.toFixed(2)}\n`
       message += `Subtotal: $${(price * item.quantity).toFixed(2)}\n`
-      message += `Imagen: ${item.image}\n`
       message += `━━━━━━━━━━━━━━━━━━\n`
-    })
+    }) 
 
     message += `\n*RESUMEN DEL PEDIDO*\n`
     message += `Subtotal: $${total.toFixed(2)}\n`
@@ -97,7 +96,7 @@ export function CartPage() {
     message += `_Confirmar método de pago con el cliente_`
 
     const encodedMessage = encodeURIComponent(message)
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`
+    const whatsappUrl = `https://wa.me/${573246718202}?text=${encodedMessage}`
 
     window.open(whatsappUrl, "_blank")
 
